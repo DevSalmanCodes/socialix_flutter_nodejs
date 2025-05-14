@@ -1,9 +1,12 @@
+
 import User from "../models/user.model.js";
 import ApiError from "../utils/ApiError.js";
-import ApiResponse from "../utils/ApiResponse.js";
+import ApiResponse from "../utils/ApiResonse.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js"
 import jwt from "jsonwebtoken";
 class AuthController {
-  static async register(req, res) {
+  async register(req, res) {
+
     const { username, email, password, bio } = req.body;
 
     if (!username || !email || !password) {
@@ -12,18 +15,7 @@ class AuthController {
         .json(new ApiError(400, "Please provide all fields"));
     }
     try {
-      const avatarLocalPath = req.files?.avatar[0]?.path;
-
-      let coverImageLocalPath;
-
-      if (
-        req?.files &&
-        Array.isArray(req?.files?.coverImage) &&
-        req?.files?.coverImage.length > 0
-      ) {
-        coverImageLocalPath = req.files?.coverImage[0]?.path;
-      }
-
+      const avatarLocalPath = req.file;
       const existedUser = await User.findOne({ email: email });
 
       if (existedUser) {
@@ -31,16 +23,23 @@ class AuthController {
           .status(400)
           .json(new ApiError(400, "User with this email already exist"));
       }
-      console.log("Cecked");
+      let uploadRes;
+      if (req.file) {
+        uploadRes = await uploadOnCloudinary(avatarLocalPath.path);
+      }
 
       const user = await User.create({
         username: username,
         email: email,
         password: password,
         bio: bio,
-        avatar: avatarLocalPath,
-        coverImage: coverImageLocalPath,
+        avatar: {
+          url: uploadRes?.url || '',
+          public_id: uploadRes?.public_id || ''
+        },
+        coverImage: '',
       });
+
       user.password = undefined;
       user.accessToken = undefined;
       user.refreshToken = undefined;
@@ -48,13 +47,16 @@ class AuthController {
         .status(201)
         .json(new ApiResponse(201, "User created successfuly", user));
     } catch (err) {
+      console.log(err);
+
       return res
+
         .status(500)
-        .json(new ApiError(500, err?.message) || "Internal server error");
+        .json(new ApiError(500, err?.message || "Internal server error"));
     }
   }
 
-  static async login(req, res) {
+  async login(req, res) {
     const { email, password } = req.body;
     if (!email || !password) {
       return res
@@ -90,10 +92,10 @@ class AuthController {
     } catch (err) {
       return res
         .status(500)
-        .json(new ApiError(500, err?.message) || "Internal server error");
+        .json(new ApiError(500, err?.message || "Internal server error"));
     }
   }
-  static async logout() {
+  async logout() {
     try {
       await User.findByIdAndUpdate(
         req.user._id,
@@ -118,11 +120,11 @@ class AuthController {
     } catch (err) {
       return res
         .status(500)
-        .json(new ApiError(500, err?.message) || "Internal server error");
+        .json(new ApiError(500, err?.message || "Internal server error"));
     }
   }
 
-  static async refreshAccessToken(req, res) {
+  async refreshAccessToken(req, res) {
     const incomingRefreshToken =
       req.cookies.refreshToken || req.body.refreshToken;
     if (!incomingRefreshToken) {
@@ -166,4 +168,4 @@ class AuthController {
   }
 }
 
-export default AuthController();
+export default new AuthController();

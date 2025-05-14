@@ -34,7 +34,17 @@ class LoginScreen extends StatelessWidget {
                 obscureText: true,
               ),
               const SizedBox(height: 20),
-              CustomButton(text: 'Login', onTap: () {}),
+              CustomButton(
+                child: Text(
+                  'Login',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                onTap: () {},
+              ),
               const SizedBox(height: 16),
               Text.rich(
                 TextSpan(

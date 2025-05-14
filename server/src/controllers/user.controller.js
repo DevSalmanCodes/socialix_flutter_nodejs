@@ -1,6 +1,7 @@
-import User from "../models/user.model";
+import User from "../models/user.model.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResonse.js";
+import {uploadOnCloudinary} from "../utils/cloudinary.js";
 class UserController {
   static async getCurrentUser(req, res) {
     try {
@@ -73,5 +74,26 @@ class UserController {
         .json(new ApiError(500, err?.message || "Internal server error"));
     }
   }
+  static async uploadProfilePic(req, res) {
+    const { email } = req.body;
+    const file = req.file;
+    console.log(email); 
+
+    if (!file || !email) {
+      return res.status(400).json(new ApiError(400, "Profile picture and email are required"));
+    }
+    try {
+      const user = await User.findOne({ email });
+      if (!user) {
+        return res.status(404).json(new ApiError(404, "User not found"));
+      }
+
+      const uploadResult = await uploadOnCloudinary(file)
+    } catch (err) {
+      return res.status(500).json(new ApiError(500, err?.message || "Internal server error"));
+    }
+  }
 }
+
+
 export default UserController;

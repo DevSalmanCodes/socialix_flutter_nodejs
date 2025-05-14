@@ -1,4 +1,4 @@
-import ApiError from "../utils/ApiError";
+import ApiError from "../utils/ApiError.js";
 import jwt from "jsonwebtoken";
 const isAuthorizedUser = (req, res) => {
   try {
@@ -7,7 +7,6 @@ const isAuthorizedUser = (req, res) => {
     return res.status(401).json(new ApiError(401, "Unauthorized"));
   }
   const token = incomingToken.split(" ")[1];
-
   const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
   if (!decodedToken) {
     return res.status(401).json(new ApiError(401, "Unauthorized"));

@@ -7,4 +7,6 @@ abstract class AuthRepository {
     String password,
     String imagePath,
   );
+
+  Future<UserEntity> loginUser(String email, String password);
 }

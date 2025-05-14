@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
     type: Object,
     default: " ",
   },
-  coverImage: {
+  coverImage: { 
     type: String,
     default: " ",
   },
@@ -52,10 +52,10 @@ userSchema.methods.comparePassword = async function (password) {
 }
 
 userSchema.methods.generateAccessToken = (userId) => {
-  return jwt.sign({_id:userId}, process.env.JWT_SECRET,{expiresIn:"1d"});
+  return jwt.sign({_id:userId}, "4ak64a3m3o9avbxzsq20",{expiresIn:"1d"});
 };
 userSchema.methods.generateRefreshToken = (userId) => {
-  return jwt.sign({_id:userId}, process.env.JWT_SECRET,{expiresIn:"10d"});
+  return jwt.sign({_id:userId}, "4ak64a3m3o9avbxzsq20",{expiresIn:"10d"});
 };
 const User = mongoose.model("User", userSchema);
 export default User;

@@ -3,30 +3,30 @@ import 'package:socialix_flutter_nodejs/features/auth/domain/entities/user_entit
 class UserModel extends UserEntity {
   UserModel({
     required super.id,
-    required super.name,
+    required super.username,
     required super.email,
-    required super.phone,
-    required super.profilePicture,
+    required super.avatar,
     required super.bio,
+    required super.coverImage,
   });
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json['id'] as String,
-      name: json['name'] as String,
+      id: json['_id'] as String,
+      username: json['username'] as String,
       email: json['email'] as String,
-      phone: json['phone'] as String,
-      profilePicture: json['profilePicture'] as String,
+      avatar: json['avatar'] as String,
       bio: json['bio'] as String,
+      coverImage: json['coverImage'] as String,
     );
   }
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'name': name,
+      '_id': id,
+      'username': username,
       'email': email,
-      'phone': phone,
-      'profilePicture': profilePicture,
+      'avatar': avatar,
       'bio': bio,
+      'coverImage': coverImage,
     };
   }
 }

@@ -17,7 +17,15 @@ class AuthRepositoryImpl extends AuthRepository {
     try {
       return remoteDataSource.singUpUser(username, email, password, imagePath);
     } on ServerException catch (e) {
-      print(e.toString());
+      throw ServerFailure(message: e.message.toString());
+    }
+  }
+
+  @override
+  Future<UserEntity> loginUser(String email, String password) {
+    try {
+      return remoteDataSource.loginUser(email, password);
+    } on ServerException catch (e) {
       throw ServerFailure(message: e.message.toString());
     }
   }

@@ -3,9 +3,10 @@ import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
-import 'package:socialix_flutter_nodejs/core/errors/exceptions.dart';
 import 'package:socialix_flutter_nodejs/core/utils/pick_image.dart';
+import 'package:socialix_flutter_nodejs/core/utils/show_toast.dart';
 import 'package:socialix_flutter_nodejs/core/utils/size_config.dart';
 import 'package:socialix_flutter_nodejs/core/widgets/custom_button.dart';
 import 'package:socialix_flutter_nodejs/core/widgets/custom_text_field.dart';
@@ -48,9 +49,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: SingleChildScrollView(
             child: BlocConsumer<AuthBloc, AuthState>(
               listener: (context, state) {
-                if (state is AuthErrorState) {}
+                if (state is AuthErrorState) {
+                  Fluttertoast.showToast(msg: state.error.toString());
+                }
                 if (state is AuthSuccessState) {
-                  context.pushReplacement('/feed');
+                  showToast('Account created successfuly');
+                  context.pushReplacement('/');
                 }
               },
               builder: (context, state) {
@@ -115,7 +119,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               )
-                              : Center(child: CircularProgressIndicator()),
+                              : Center(
+                                child: CircularProgressIndicator.adaptive(),
+                              ),
                       onTap:
                           () => context.read<AuthBloc>().add(
                             SignUpRequestEvent(

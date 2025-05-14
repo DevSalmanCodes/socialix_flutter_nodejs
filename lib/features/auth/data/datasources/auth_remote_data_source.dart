@@ -4,6 +4,8 @@ import 'package:socialix_flutter_nodejs/features/auth/data/models/user_model.dar
 
 class AuthRemoteDataSource {
   late Dio dio;
+  final String baseUrl = 'http://localhost:3000/api/v1/auth/';
+
   AuthRemoteDataSource() {
     dio = Dio();
   }
@@ -11,7 +13,7 @@ class AuthRemoteDataSource {
     String username,
     String email,
     String password,
-    String imagePath,
+    String avatarPath,
   ) async {
     final rawData = {
       'username': username,
@@ -19,23 +21,36 @@ class AuthRemoteDataSource {
       'password': password,
     };
     FormData formData = FormData();
-    if (imagePath != '') {
+    if (avatarPath != '') {
       formData = FormData.fromMap({
         ...rawData,
         'image': await MultipartFile.fromFile(
-          imagePath,
-          filename: imagePath.split('/').last,
+          avatarPath,
+          filename: avatarPath.split('/').last,
         ),
       });
     }
     final res = await dio.post(
-      'http://localhost:3000/api/v1/auth/register',
-      data: imagePath != '' ? formData : rawData,
+      '$baseUrl/register',
+      data: avatarPath != '' ? formData : rawData,
     );
     if (res.statusCode == 201) {
-      return UserModel.fromJson(res.data);
+      return UserModel.fromJson(res.data['data']);
     } else {
-      final errorMessage = res.data['error'] ?? 'Unknown error';
+      final errorMessage = res.data['message'] ?? 'Unknown error';
+      throw ServerException(errorMessage);
+    }
+  }
+
+  Future<UserModel> loginUser(String email, String password) async {
+    final res = await dio.post(
+      '$baseUrl/login',
+      data: {'email': email, 'password': password},
+    );
+    if (res.statusCode == 200) {
+      return UserModel.fromJson(res.data['data']['user']);
+    } else {
+      final errorMessage = res.data['message'];
       throw ServerException(errorMessage);
     }
   }

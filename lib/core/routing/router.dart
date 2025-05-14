@@ -5,8 +5,8 @@ import 'package:socialix_flutter_nodejs/features/post/presentation/screens/feed_
 
 final GoRouter router = GoRouter(
   routes: [
-    GoRoute(path: '/', builder: (context, state) => const LoginScreen()),
+    GoRoute(path: '/', builder: (context, state) => LoginScreen()),
     GoRoute(path: '/signup', builder: (context, state) => SignUpScreen()),
-    GoRoute(path: '/feed',builder: (context, state) => FeedScreen(),)
+    GoRoute(path: '/feed', builder: (context, state) => FeedScreen()),
   ],
 );

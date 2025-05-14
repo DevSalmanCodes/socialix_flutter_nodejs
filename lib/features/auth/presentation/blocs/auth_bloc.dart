@@ -1,11 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:socialix_flutter_nodejs/features/auth/domain/usecases/login_user.dart';
 import 'package:socialix_flutter_nodejs/features/auth/domain/usecases/sign_up_user.dart';
 import 'package:socialix_flutter_nodejs/features/auth/presentation/blocs/auth_event.dart';
 import 'package:socialix_flutter_nodejs/features/auth/presentation/blocs/auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SignUpUser signUpUser;
-  AuthBloc({required this.signUpUser}) : super(AuthInitialState()) {
+  final LoginUser loginUser;
+  AuthBloc({required this.signUpUser, required this.loginUser})
+    : super(AuthInitialState()) {
     on<LoginRequestEvent>(_onLoginRequested);
     on<SignUpRequestEvent>(_onSignUpRequested);
     on<LogoutRequestEvent>(_onLogoutRequested);
@@ -16,8 +19,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoadingState());
-    try {} catch (e) {
-      emit(AuthErrorState(error: "Login Failed"));
+    try {
+      final user = await loginUser(event.email, event.password);
+      emit(AuthSuccessState(data: user));
+    } catch (e) {
+      emit(AuthErrorState(error: e.toString()));
     }
   }
 

@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:socialix_flutter_nodejs/core/routing/router.dart';
 import 'package:socialix_flutter_nodejs/core/theme/app_theme.dart';
 import 'package:socialix_flutter_nodejs/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:socialix_flutter_nodejs/features/auth/data/datasources/auth_secure_local_data_source.dart';
 import 'package:socialix_flutter_nodejs/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:socialix_flutter_nodejs/features/auth/domain/usecases/login_user.dart';
 import 'package:socialix_flutter_nodejs/features/auth/domain/usecases/sign_up_user.dart';
 import 'package:socialix_flutter_nodejs/features/auth/presentation/blocs/auth_bloc.dart';
 
-void main() {
+void main() async {
   final AuthRepositoryImpl authRepositoryImpl = AuthRepositoryImpl(
     remoteDataSource: AuthRemoteDataSource(),
+    secureLocalDataSource: AuthSecureLocalDataSourceImpl(
+      secureStorage: FlutterSecureStorage(),
+    ),
   );
   runApp(
     MyApp(

@@ -27,6 +27,9 @@ class LoginScreen extends StatelessWidget {
                 showToast('Logged in successfully');
                 context.pushReplacement('/feed');
               }
+              if (state is AuthErrorState) {
+                showToast(state.error);
+              }
             },
             builder: (context, state) {
               return Column(
@@ -57,7 +60,9 @@ class LoginScreen extends StatelessWidget {
                               ),
                             )
                             : Center(
-                              child: CircularProgressIndicator.adaptive(),
+                              child: CircularProgressIndicator.adaptive(
+                                strokeWidth: 4.0,
+                              ),
                             ),
                     onTap: () {
                       if (_emailController.text.isEmpty ||

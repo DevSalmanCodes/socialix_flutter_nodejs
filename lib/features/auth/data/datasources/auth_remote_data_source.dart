@@ -9,6 +9,7 @@ class AuthRemoteDataSource {
   AuthRemoteDataSource() {
     dio = Dio();
   }
+
   Future<UserModel> singUpUser(
     String username,
     String email,
@@ -47,11 +48,10 @@ class AuthRemoteDataSource {
       '$baseUrl/login',
       data: {'email': email, 'password': password},
     );
-    if (res.statusCode == 200) {
-      return UserModel.fromJson(res.data['data']['user']);
-    } else {
-      final errorMessage = res.data['message'];
-      throw ServerException(errorMessage);
-    }
+    return UserModel.fromJson(res.data['data']);
+  }
+
+  Future<void> logoutUser() async {
+    await dio.post('$baseUrl/logout');
   }
 }

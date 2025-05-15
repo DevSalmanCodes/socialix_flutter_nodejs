@@ -76,7 +76,8 @@ class AuthController {
       const isMatch = await user.comparePassword(password);
 
       if (!isMatch) {
-        return res.status(401).json(new ApiError(401, "Incorrect password"));
+        
+        return res.status(400).json(new ApiError(400, "Incorrect password"));
       }
 
       const accessToken = user.generateAccessToken(user._id);
@@ -88,15 +89,14 @@ class AuthController {
       user.refreshToken = refreshToken;
       user.password = undefined;
       user.avatar = user.avatar.url;
+      user.accessToken  = accessToken;
       return res
         .status(200)
         .cookie("accessToken", accessToken, options)
         .cookie("refreshToken", refreshToken, options)
+
         .json(
-          new ApiResponse(200, "User logged in successfully", {
-            user: user,
-            accessToken: accessToken,
-          })
+          new ApiResponse(200, "User logged in successfully", {user,accessToken})
         );
     } catch (err) {
       return res

@@ -1,4 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:socialix_flutter_nodejs/core/errors/exceptions.dart';
+import 'package:socialix_flutter_nodejs/core/utils/show_toast.dart';
 import 'package:socialix_flutter_nodejs/features/auth/domain/usecases/login_user.dart';
 import 'package:socialix_flutter_nodejs/features/auth/domain/usecases/sign_up_user.dart';
 import 'package:socialix_flutter_nodejs/features/auth/presentation/blocs/auth_event.dart';
@@ -22,6 +24,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       final user = await loginUser(event.email, event.password);
       emit(AuthSuccessState(data: user));
+    } on ServerException catch (e) {
+      emit(AuthErrorState(error: e.message.toString()));
     } catch (e) {
       emit(AuthErrorState(error: e.toString()));
     }

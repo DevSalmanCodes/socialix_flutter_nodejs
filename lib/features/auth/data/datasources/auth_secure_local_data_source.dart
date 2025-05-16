@@ -4,6 +4,7 @@ abstract class AuthSecureLocalDataSource {
   Future<void> saveToken(String key, String token);
   Future<String?> getToken(String key);
   Future<void> deleteToken(String key);
+  Future<bool> isLoggedIn();
 }
 
 class AuthSecureLocalDataSourceImpl extends AuthSecureLocalDataSource {
@@ -22,5 +23,10 @@ class AuthSecureLocalDataSourceImpl extends AuthSecureLocalDataSource {
   @override
   Future<void> deleteToken(String key) async {
     await secureStorage.delete(key: key);
+  }
+@override
+  Future<bool> isLoggedIn() async {
+    final res = await getToken('accessToken');
+    return res != null && res.isNotEmpty;
   }
 }

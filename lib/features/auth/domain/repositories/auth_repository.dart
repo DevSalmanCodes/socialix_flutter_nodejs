@@ -10,4 +10,6 @@ abstract class AuthRepository {
 
   Future<UserEntity> loginUser(String email, String password);
   Future<void> logoutUser();
+
+  Future<bool> isLoggedIn();
 }

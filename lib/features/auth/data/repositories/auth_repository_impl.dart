@@ -46,7 +46,14 @@ class AuthRepositoryImpl extends AuthRepository {
     try {
       await remoteDataSource.logoutUser();
     } on DioException catch (e) {
-      throw ServerException(e.response?.data['message']);
+      throw ServerException(e.response?.data['message'] ?? 'Unexpected error');
+    } catch (e) {
+      throw ServerException(e.toString());
     }
+  }
+
+  @override
+  Future<bool> isLoggedIn() async {
+    return await secureLocalDataSource.isLoggedIn();
   }
 }

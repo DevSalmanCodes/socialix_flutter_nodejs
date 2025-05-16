@@ -48,7 +48,7 @@ class AuthRemoteDataSource {
       '$baseUrl/login',
       data: {'email': email, 'password': password},
     );
-    return UserModel.fromJson(res.data['data']);
+  return UserModel.fromJson(res.data['data']);
   }
 
   Future<void> logoutUser() async {

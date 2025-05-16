@@ -9,6 +9,7 @@ import 'package:socialix_flutter_nodejs/features/auth/data/repositories/auth_rep
 import 'package:socialix_flutter_nodejs/features/auth/domain/usecases/login_user.dart';
 import 'package:socialix_flutter_nodejs/features/auth/domain/usecases/sign_up_user.dart';
 import 'package:socialix_flutter_nodejs/features/auth/presentation/blocs/auth_bloc.dart';
+import 'package:socialix_flutter_nodejs/features/post/presentation/cubits/auth_state_cubit.dart';
 
 void main() async {
   final AuthRepositoryImpl authRepositoryImpl = AuthRepositoryImpl(
@@ -38,6 +39,17 @@ class MyApp extends StatelessWidget {
           create:
               (context) =>
                   AuthBloc(signUpUser: signUpUser, loginUser: loginUser),
+        ),
+        BlocProvider(
+          create:
+              (context) => AuthStateCubit(
+                authRepository: AuthRepositoryImpl(
+                  remoteDataSource: AuthRemoteDataSource(),
+                  secureLocalDataSource: AuthSecureLocalDataSourceImpl(
+                    secureStorage: FlutterSecureStorage(),
+                  ),
+                ),
+              ),
         ),
       ],
       child: MaterialApp.router(

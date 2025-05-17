@@ -5,6 +5,6 @@ class LoginUser {
   AuthRepository authRepository;
   LoginUser({required this.authRepository});
 
-  Future<UserEntity> call(String email, String password) =>
-      authRepository.loginUser(email, password);
+  Future<UserEntity> call(String email, String password) async =>
+      await authRepository.loginUser(email, password);
 }

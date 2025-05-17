@@ -9,5 +9,6 @@ class SignUpUser {
     String email,
     String password,
     String imagePath,
-  ) => authRepository.signUpUser(username, email, password, imagePath);
+  ) async =>
+      await authRepository.signUpUser(username, email, password, imagePath);
 }

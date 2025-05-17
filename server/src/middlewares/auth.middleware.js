@@ -7,7 +7,7 @@ const isAuthorizedUser = (req, res) => {
     return res.status(401).json(new ApiError(401, "Unauthorized"));
   }
   const token = incomingToken.split(" ")[1];
-  const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+  const decodedToken = jwt.verify(token,"4ak64a3m3o9avbxzsq20",);
   if (!decodedToken) {
     return res.status(401).json(new ApiError(401, "Unauthorized"));
   }

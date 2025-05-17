@@ -3,6 +3,7 @@ import 'package:socialix_flutter_nodejs/core/errors/exceptions.dart';
 import 'package:socialix_flutter_nodejs/core/errors/failures.dart';
 import 'package:socialix_flutter_nodejs/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:socialix_flutter_nodejs/features/auth/data/datasources/auth_secure_local_data_source.dart';
+import 'package:socialix_flutter_nodejs/features/auth/data/models/user_model.dart';
 import 'package:socialix_flutter_nodejs/features/auth/domain/entities/user_entity.dart';
 import 'package:socialix_flutter_nodejs/features/auth/domain/repositories/auth_repository.dart';
 
@@ -42,9 +43,9 @@ class AuthRepositoryImpl extends AuthRepository {
   }
 
   @override
-  Future<void> logoutUser() async {
+  Future<UserEntity> logoutUser() async {
     try {
-      await remoteDataSource.logoutUser();
+      return await remoteDataSource.logoutUser();
     } on DioException catch (e) {
       throw ServerException(e.response?.data['message'] ?? 'Unexpected error');
     } catch (e) {

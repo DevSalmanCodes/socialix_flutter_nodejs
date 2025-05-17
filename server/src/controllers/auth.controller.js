@@ -106,7 +106,7 @@ class AuthController {
   }
   async logout() {
     try {
-      await User.findByIdAndUpdate(
+     const user = await User.findByIdAndUpdate(
         req.user._id,
         {
           $unset: {
@@ -125,7 +125,7 @@ class AuthController {
         .status(200)
         .clearCookie("accessToken", options)
         .clearCookie("refreshToken", options)
-        .json(new ApiResponse(200, "Logged out successfuly"));
+        .json(new ApiResponse(200, "Logged out successfuly",user));
     } catch (err) {
       return res
         .status(500)

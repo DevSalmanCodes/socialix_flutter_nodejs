@@ -10,11 +10,19 @@ Future<void> initDependencies() async {
   sl.registerSingleton<FlutterSecureStorage>(FlutterSecureStorage());
 
   sl.registerLazySingleton<AuthSecureLocalDataSourceImpl>(
-    () => AuthSecureLocalDataSourceImpl(secureStorage: sl()),
+    () => AuthSecureLocalDataSourceImpl(
+      secureStorage: sl<FlutterSecureStorage>(),
+    ),
   );
-  sl.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSource());
+  sl.registerLazySingleton<AuthRemoteDataSource>(
+    () => AuthRemoteDataSource(
+      secureLocalDataSource: sl<AuthSecureLocalDataSourceImpl>(),
+    ),
+  );
   sl.registerLazySingleton<AuthRepositoryImpl>(
-    () =>
-        AuthRepositoryImpl(remoteDataSource: sl(), secureLocalDataSource: sl()),
+    () => AuthRepositoryImpl(
+      remoteDataSource: sl<AuthRemoteDataSource>(),
+      secureLocalDataSource: sl<AuthSecureLocalDataSourceImpl>(),
+    ),
   );
 }

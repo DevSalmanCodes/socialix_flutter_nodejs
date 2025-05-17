@@ -1,12 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:socialix_flutter_nodejs/core/errors/exceptions.dart';
+import 'package:socialix_flutter_nodejs/features/auth/data/datasources/auth_secure_local_data_source.dart';
 import 'package:socialix_flutter_nodejs/features/auth/data/models/user_model.dart';
 
 class AuthRemoteDataSource {
   late Dio dio;
+  final AuthSecureLocalDataSource secureLocalDataSource;
   final String baseUrl = 'http://localhost:3000/api/v1/auth/';
 
-  AuthRemoteDataSource() {
+  AuthRemoteDataSource({required this.secureLocalDataSource}) {
     dio = Dio();
   }
 
@@ -48,10 +50,15 @@ class AuthRemoteDataSource {
       '$baseUrl/login',
       data: {'email': email, 'password': password},
     );
-  return UserModel.fromJson(res.data['data']);
+    return UserModel.fromJson(res.data['data']);
   }
 
-  Future<void> logoutUser() async {
-    await dio.post('$baseUrl/logout');
+  Future<UserModel> logoutUser() async {
+    final token = await secureLocalDataSource.getToken('accessToken');
+    final res = await dio.post(
+      '$baseUrl/logout',
+      options: Options(headers: {'Authorization': 'Bearer $token'}),
+    );
+    return UserModel.fromJson(res.data['data']['user']);
   }
 }

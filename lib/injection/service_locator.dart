@@ -1,0 +1,20 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get_it/get_it.dart';
+import 'package:socialix_flutter_nodejs/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:socialix_flutter_nodejs/features/auth/data/datasources/auth_secure_local_data_source.dart';
+import 'package:socialix_flutter_nodejs/features/auth/data/repositories/auth_repository_impl.dart';
+
+final sl = GetIt.instance;
+
+Future<void> initDependencies() async {
+  sl.registerSingleton<FlutterSecureStorage>(FlutterSecureStorage());
+
+  sl.registerLazySingleton<AuthSecureLocalDataSourceImpl>(
+    () => AuthSecureLocalDataSourceImpl(secureStorage: sl()),
+  );
+  sl.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSource());
+  sl.registerLazySingleton<AuthRepositoryImpl>(
+    () =>
+        AuthRepositoryImpl(remoteDataSource: sl(), secureLocalDataSource: sl()),
+  );
+}

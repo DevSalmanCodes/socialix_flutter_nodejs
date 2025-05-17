@@ -10,13 +10,13 @@ import 'package:socialix_flutter_nodejs/features/auth/domain/usecases/login_user
 import 'package:socialix_flutter_nodejs/features/auth/domain/usecases/sign_up_user.dart';
 import 'package:socialix_flutter_nodejs/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:socialix_flutter_nodejs/features/post/presentation/cubits/auth_state_cubit.dart';
+import 'package:socialix_flutter_nodejs/injection/service_locator.dart';
 
 void main() async {
+  initDependencies();
   final AuthRepositoryImpl authRepositoryImpl = AuthRepositoryImpl(
-    remoteDataSource: AuthRemoteDataSource(),
-    secureLocalDataSource: AuthSecureLocalDataSourceImpl(
-      secureStorage: FlutterSecureStorage(),
-    ),
+    remoteDataSource: sl<AuthRemoteDataSource>(),
+    secureLocalDataSource: sl<AuthSecureLocalDataSourceImpl>(),
   );
   runApp(
     MyApp(

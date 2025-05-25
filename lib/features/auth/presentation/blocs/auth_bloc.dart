@@ -59,10 +59,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(AuthLoadingState());
     try {
-     final res = await logoutUser();
+      final res = await logoutUser();
       emit(AuthSuccessState(data: res));
-    } catch (e) {
-      emit(AuthErrorState(error: "Logout Failed"));
+    } on ServerException catch (e) {
+      emit(AuthErrorState(error: e.message.toString()));
     }
   }
 }

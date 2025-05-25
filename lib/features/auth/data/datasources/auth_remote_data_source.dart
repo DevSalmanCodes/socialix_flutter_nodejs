@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:socialix_flutter_nodejs/core/errors/exceptions.dart';
 import 'package:socialix_flutter_nodejs/features/auth/data/datasources/auth_secure_local_data_source.dart';
 import 'package:socialix_flutter_nodejs/features/auth/data/models/user_model.dart';
 
@@ -37,12 +36,7 @@ class AuthRemoteDataSource {
       '$baseUrl/register',
       data: avatarPath != '' ? formData : rawData,
     );
-    if (res.statusCode == 201) {
-      return UserModel.fromJson(res.data['data']);
-    } else {
-      final errorMessage = res.data['message'] ?? 'Unknown error';
-      throw ServerException(errorMessage);
-    }
+    return UserModel.fromJson(res.data['data']);
   }
 
   Future<UserModel> loginUser(String email, String password) async {
@@ -59,6 +53,6 @@ class AuthRemoteDataSource {
       '$baseUrl/logout',
       options: Options(headers: {'Authorization': 'Bearer $token'}),
     );
-    return UserModel.fromJson(res.data['data']['user']);
+    return UserModel.fromJson(res.data['data']);
   }
 }

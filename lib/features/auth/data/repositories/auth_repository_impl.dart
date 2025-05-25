@@ -3,7 +3,6 @@ import 'package:socialix_flutter_nodejs/core/errors/exceptions.dart';
 import 'package:socialix_flutter_nodejs/core/errors/failures.dart';
 import 'package:socialix_flutter_nodejs/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:socialix_flutter_nodejs/features/auth/data/datasources/auth_secure_local_data_source.dart';
-import 'package:socialix_flutter_nodejs/features/auth/data/models/user_model.dart';
 import 'package:socialix_flutter_nodejs/features/auth/domain/entities/user_entity.dart';
 import 'package:socialix_flutter_nodejs/features/auth/domain/repositories/auth_repository.dart';
 
@@ -32,8 +31,8 @@ class AuthRepositoryImpl extends AuthRepository {
   Future<UserEntity> loginUser(String email, String password) async {
     try {
       final user = await remoteDataSource.loginUser(email, password);
-      await secureLocalDataSource.saveToken('accessToken', user.accessToken);
-      await secureLocalDataSource.saveToken('refreshToken', user.refreshToken);
+      await secureLocalDataSource.saveToken('accessToken', user.accessToken!);
+      await secureLocalDataSource.saveToken('refreshToken', user.refreshToken!);
       return user;
     } on DioException catch (e) {
       throw ServerException(e.response?.data['message'] ?? 'Unexpected error');
@@ -45,10 +44,17 @@ class AuthRepositoryImpl extends AuthRepository {
   @override
   Future<UserEntity> logoutUser() async {
     try {
-      return await remoteDataSource.logoutUser();
+      final res = await remoteDataSource.logoutUser();
+      print('here');
+
+      _deleteAccessAndRefrshToken();
+      return res;
     } on DioException catch (e) {
+      _deleteAccessAndRefrshToken();
       throw ServerException(e.response?.data['message'] ?? 'Unexpected error');
     } catch (e) {
+      print(e.toString());
+
       throw ServerException(e.toString());
     }
   }
@@ -56,5 +62,12 @@ class AuthRepositoryImpl extends AuthRepository {
   @override
   Future<bool> isLoggedIn() async {
     return await secureLocalDataSource.isLoggedIn();
+  }
+
+  Future<void> _deleteAccessAndRefrshToken() async {
+    Future.wait([
+      secureLocalDataSource.deleteToken('accessToken'),
+      secureLocalDataSource.deleteToken('refreshToken'),
+    ]);
   }
 }

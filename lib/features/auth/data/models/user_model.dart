@@ -13,14 +13,14 @@ class UserModel extends UserEntity {
   });
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json['user']['_id'] as String,
-      username: json['user']['username'] as String,
-      email: json['user']['email'] as String,
-      avatar: json['user']['avatar'] as String,
-      bio: json['user']['bio'] as String,
-      coverImage: json['user']['coverImage'] as String,
-      accessToken: json['accessToken'] as String,
-      refreshToken: json['user']['refreshToken'] as String,
+      id: json['_id'] as String,
+      username: json['username'] as String,
+      email: json['email'] as String,
+      avatar: json['avatar'] as String?,
+      bio: json['bio'] as String,
+      coverImage: json['coverImage'] as String,
+      accessToken: json['accessToken'] as String?,
+      refreshToken: json['refreshToken'] as String?,
     );
   }
   Map<String, dynamic> toJson() {

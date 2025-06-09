@@ -10,6 +10,7 @@ import 'package:socialix_flutter_nodejs/features/auth/presentation/blocs/auth_bl
 import 'package:socialix_flutter_nodejs/features/auth/presentation/cubits/auth_state_cubit.dart';
 import 'package:socialix_flutter_nodejs/features/post/data/repositories/post_repository_impl.dart';
 import 'package:socialix_flutter_nodejs/features/post/domain/usecases/create_post.dart';
+import 'package:socialix_flutter_nodejs/features/post/domain/usecases/get_posts.dart';
 import 'package:socialix_flutter_nodejs/features/post/presentation/blocs/post_bloc.dart';
 import 'package:socialix_flutter_nodejs/features/post/presentation/cubits/image_picker_cubit.dart';
 import 'package:socialix_flutter_nodejs/injection/service_locator.dart';
@@ -24,7 +25,8 @@ void main() async {
       signUpUser: SignUpUser(authRepository: authRepositoryImpl),
       loginUser: LoginUser(authRepository: authRepositoryImpl),
       logoutUser: LogoutUser(authRepository: authRepositoryImpl),
-      createPost: CreatePost(postRepository: sl<PostRepositoryImpl>()),
+      createPost: CreatePost(postRepository: postRepositoryImpl),
+      getPosts: GetPosts(postRepository:postRepositoryImpl),
     ),
   );
 }
@@ -34,12 +36,13 @@ class MyApp extends StatelessWidget {
   final LoginUser loginUser;
   final LogoutUser logoutUser;
   final CreatePost createPost;
+  final GetPosts getPosts;
   const MyApp({
     super.key,
     required this.signUpUser,
     required this.loginUser,
     required this.logoutUser,
-    required this.createPost,
+    required this.createPost, required this.getPosts,
   });
 
   @override
@@ -59,7 +62,7 @@ class MyApp extends StatelessWidget {
               (context) =>
                   AuthStateCubit(authRepository: sl<AuthRepositoryImpl>()),
         ),
-        BlocProvider(create: (context) => PostBloc(createPost: createPost)),
+        BlocProvider(create: (context) => PostBloc(createPost: createPost,getPosts: getPosts)),
         BlocProvider(create: (context) => ImagePickerCubit()),
       ],
       child: MaterialApp.router(

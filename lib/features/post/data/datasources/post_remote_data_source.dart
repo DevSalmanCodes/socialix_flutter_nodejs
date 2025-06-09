@@ -52,8 +52,18 @@ class PostRemoteDataSource implements IPostRemoteDataSource {
   }
 
   @override
-  Future<List<PostModel>> getPosts() {
-    throw UnimplementedError();
+  Future<List<PostModel>> getPosts() async {
+    final res = await dio.get(
+      '$baseUrl/get-posts',
+      options: Options(
+        headers: {
+          'Authorization':
+              'Bearer ${await authSecureLocalDataSource.getToken('accessToken')}',
+        },
+      ),
+    );
+    print(res.data);
+    return res.data['posts'].map((post) => PostModel.fromJson(post)).toList();
   }
 
   @override

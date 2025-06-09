@@ -8,9 +8,10 @@ class CreatePostEvent extends PostEvent {
 
   CreatePostEvent({required this.file, required this.content});
 }
-class UpdateImageEvent extends PostEvent{
+
+class UpdateImageEvent extends PostEvent {
   final File? file;
 
   UpdateImageEvent({required this.file});
-
 }
+class GetPostsEvent extends PostEvent {}

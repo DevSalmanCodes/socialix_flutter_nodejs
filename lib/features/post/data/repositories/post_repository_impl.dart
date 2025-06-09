@@ -14,7 +14,7 @@ class PostRepositoryImpl extends IPostRepository {
       return remoteDataSource.createPost(content, imagePath);
     } on DioException catch (e) {
       throw ServerException(e.response?.data['message'] ?? 'Server Error');
-    }catch(e){
+    } catch (e) {
       throw ServerException(e.toString());
     }
   }
@@ -30,8 +30,14 @@ class PostRepositoryImpl extends IPostRepository {
   }
 
   @override
-  Future<List<PostEntity>> getPosts() {
-    throw UnimplementedError();
+  Future<List<PostEntity>> getPosts() async {
+    try {
+      return await remoteDataSource.getPosts();
+    } on DioException catch (e) {
+      throw ServerException(e.response?.data['message'] ?? 'Server Error');
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
   }
 
   @override

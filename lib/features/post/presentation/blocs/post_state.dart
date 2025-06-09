@@ -13,7 +13,7 @@ class PostInitial extends PostState{
 class PostLoadingState extends PostState {}
 
 class PostSuccessState extends PostState {
-  final PostEntity data;
+  final dynamic data;
   PostSuccessState(this.data);
 }
 

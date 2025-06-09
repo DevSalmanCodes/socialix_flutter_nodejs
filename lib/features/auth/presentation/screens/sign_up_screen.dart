@@ -109,19 +109,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                     const SizedBox(height: 20),
                     CustomButton(
-                      child:
-                          state is! AuthLoadingState
-                              ? Text(
-                                'Sign Up',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              )
-                              : Center(
-                                child: CircularProgressIndicator.adaptive(),
-                              ),
+                      text: 'Sign Up',
+
                       onTap:
                           () => context.read<AuthBloc>().add(
                             SignUpRequestEvent(
@@ -131,6 +120,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               imagepath: _imagePath,
                             ),
                           ),
+                      isLoading: state is! AuthLoadingState,
                     ),
                     const SizedBox(height: 16),
                     Text.rich(

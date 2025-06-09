@@ -3,6 +3,7 @@ import 'package:socialix_flutter_nodejs/features/auth/presentation/screens/login
 import 'package:socialix_flutter_nodejs/features/auth/presentation/screens/sign_up_screen.dart';
 import 'package:socialix_flutter_nodejs/features/auth/presentation/splash_screen.dart';
 import 'package:socialix_flutter_nodejs/features/post/presentation/screens/feed_screen.dart';
+import 'package:socialix_flutter_nodejs/features/post/presentation/screens/upload_post_screen.dart';
 
 final GoRouter router = GoRouter(
   routes: [
@@ -10,5 +11,9 @@ final GoRouter router = GoRouter(
     GoRoute(path: '/login', builder: (context, state) => LoginScreen()),
     GoRoute(path: '/signup', builder: (context, state) => SignUpScreen()),
     GoRoute(path: '/feed', builder: (context, state) => FeedScreen()),
+    GoRoute(
+      path: '/uploadPost',
+      builder: (context, state) => UploadPostScreen(),
+    ),
   ],
 );

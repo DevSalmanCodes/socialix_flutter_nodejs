@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -15,7 +16,10 @@ class FeedScreen extends StatelessWidget {
         title: const Text('Feed'),
         centerTitle: true,
         actions: [
-          IconButton(icon: Icon(PhosphorIcons.plus()), onPressed: () {}),
+          IconButton(
+            icon: Icon(PhosphorIcons.plus()),
+            onPressed: () => context.push('/uploadPost'),
+          ),
         ],
       ),
       body: ListView.builder(

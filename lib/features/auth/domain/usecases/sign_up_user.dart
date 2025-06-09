@@ -2,7 +2,7 @@ import 'package:socialix_flutter_nodejs/features/auth/domain/entities/user_entit
 import 'package:socialix_flutter_nodejs/features/auth/domain/repositories/auth_repository.dart';
 
 class SignUpUser {
-  final AuthRepository authRepository;
+  final IAuthRepository authRepository;
   SignUpUser({required this.authRepository});
   Future<UserEntity> call(
     String username,

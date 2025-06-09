@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:socialix_flutter_nodejs/features/post/presentation/cubits/auth_state_cubit.dart';
+import 'package:socialix_flutter_nodejs/features/auth/presentation/cubits/auth_state_cubit.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});

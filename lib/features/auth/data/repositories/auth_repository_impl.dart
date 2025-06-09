@@ -6,7 +6,7 @@ import 'package:socialix_flutter_nodejs/features/auth/data/datasources/auth_secu
 import 'package:socialix_flutter_nodejs/features/auth/domain/entities/user_entity.dart';
 import 'package:socialix_flutter_nodejs/features/auth/domain/repositories/auth_repository.dart';
 
-class AuthRepositoryImpl extends AuthRepository {
+class AuthRepositoryImpl implements IAuthRepository {
   final AuthRemoteDataSource remoteDataSource;
   final AuthSecureLocalDataSource secureLocalDataSource;
   AuthRepositoryImpl({

@@ -2,7 +2,7 @@ import 'package:socialix_flutter_nodejs/features/auth/domain/entities/user_entit
 import 'package:socialix_flutter_nodejs/features/auth/domain/repositories/auth_repository.dart';
 
 class LoginUser {
-  AuthRepository authRepository;
+ final IAuthRepository authRepository;
   LoginUser({required this.authRepository});
 
   Future<UserEntity> call(String email, String password) async =>

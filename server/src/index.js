@@ -21,8 +21,14 @@ connectDb()
     console.log(err);
   });
 
-
+//Auth Routes
 import authRoutes from "./routes/auth.routes.js";
-import userRoutes from "./routes/user.routes.js";
 app.use("/api/v1/auth", authRoutes)
+
+//User Routes
+import userRoutes from "./routes/user.routes.js";
 app.use("/api/v1/user", userRoutes)
+
+//Post Routes
+import postRoutes from "./routes/post.routes.js";
+app.use("/api/v1/post", postRoutes);

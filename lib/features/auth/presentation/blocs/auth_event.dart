@@ -7,19 +7,17 @@ class LoginRequestEvent extends AuthEvent {
   LoginRequestEvent({required this.email, required this.password});
 }
 
-class 
-SignUpRequestEvent extends AuthEvent {
+class SignUpRequestEvent extends AuthEvent {
   final String username;
   final String email;
   final String password;
   String imagepath;
 
-
   SignUpRequestEvent({
     required this.username,
     required this.email,
     required this.password,
-    required this.imagepath
+    required this.imagepath,
   });
 }
 

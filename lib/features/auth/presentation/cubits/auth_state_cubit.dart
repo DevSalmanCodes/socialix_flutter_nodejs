@@ -4,7 +4,7 @@ import 'package:socialix_flutter_nodejs/features/auth/domain/repositories/auth_r
 enum UserAuthState { authenticated, unauthenticated, checking }
 
 class AuthStateCubit extends Cubit<UserAuthState> {
-  final AuthRepository authRepository;
+  final IAuthRepository authRepository;
   AuthStateCubit({required this.authRepository})
     : super(UserAuthState.checking) {
     _checkAuthState();

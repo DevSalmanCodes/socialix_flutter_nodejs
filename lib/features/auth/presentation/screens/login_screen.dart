@@ -49,21 +49,8 @@ class LoginScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   CustomButton(
-                    child:
-                        state is! AuthLoadingState
-                            ? Text(
-                              'Login',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            )
-                            : Center(
-                              child: CircularProgressIndicator.adaptive(
-                                strokeWidth: 4.0,
-                              ),
-                            ),
+                    text: 'Login',
+
                     onTap: () {
                       if (_emailController.text.isEmpty ||
                           _passwordController.text.isEmpty) {
@@ -77,6 +64,7 @@ class LoginScreen extends StatelessWidget {
                         );
                       }
                     },
+                    isLoading: state is AuthLoadingState,
                   ),
                   const SizedBox(height: 16),
                   Text.rich(

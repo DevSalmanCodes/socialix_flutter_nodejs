@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:socialix_flutter_nodejs/core/errors/exceptions.dart';
-import 'package:socialix_flutter_nodejs/core/errors/failures.dart';
 import 'package:socialix_flutter_nodejs/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:socialix_flutter_nodejs/features/auth/data/datasources/auth_secure_local_data_source.dart';
 import 'package:socialix_flutter_nodejs/features/auth/domain/entities/user_entity.dart';
@@ -22,8 +21,8 @@ class AuthRepositoryImpl implements IAuthRepository {
   ) {
     try {
       return remoteDataSource.singUpUser(username, email, password, imagePath);
-    } on ServerException catch (e) {
-      throw ServerFailure(message: e.message.toString());
+    } on DioException catch (e) {
+      throw ServerException(e.message.toString());
     }
   }
 
@@ -45,16 +44,13 @@ class AuthRepositoryImpl implements IAuthRepository {
   Future<UserEntity> logoutUser() async {
     try {
       final res = await remoteDataSource.logoutUser();
-      print('here');
 
-      _deleteAccessAndRefrshToken();
+      _deleteAccessAndRefreshToken();
       return res;
     } on DioException catch (e) {
-      _deleteAccessAndRefrshToken();
+      _deleteAccessAndRefreshToken();
       throw ServerException(e.response?.data['message'] ?? 'Unexpected error');
     } catch (e) {
-      print(e.toString());
-
       throw ServerException(e.toString());
     }
   }
@@ -64,7 +60,7 @@ class AuthRepositoryImpl implements IAuthRepository {
     return await secureLocalDataSource.isLoggedIn();
   }
 
-  Future<void> _deleteAccessAndRefrshToken() async {
+  Future<void> _deleteAccessAndRefreshToken() async {
     Future.wait([
       secureLocalDataSource.deleteToken('accessToken'),
       secureLocalDataSource.deleteToken('refreshToken'),

@@ -13,7 +13,7 @@ class PostRepositoryImpl extends IPostRepository {
     try {
       return remoteDataSource.createPost(content, imagePath);
     } on DioException catch (e) {
-      throw ServerException(e.response?.data['message'] ?? 'Server Error');
+      throw ServerException(e.response?.data['message'] ?? 'Unexpected Error');
     } catch (e) {
       throw ServerException(e.toString());
     }
@@ -34,7 +34,7 @@ class PostRepositoryImpl extends IPostRepository {
     try {
       return await remoteDataSource.getPosts();
     } on DioException catch (e) {
-      throw ServerException(e.response?.data['message'] ?? 'Server Error');
+      throw ServerException(e.response?.data['message'] ?? 'Unexpected Error');
     } catch (e) {
       throw ServerException(e.toString());
     }

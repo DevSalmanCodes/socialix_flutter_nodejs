@@ -1,12 +1,14 @@
+import 'package:socialix_flutter_nodejs/features/auth/domain/entities/user_entity.dart';
 import 'package:socialix_flutter_nodejs/features/post/domain/entities/comment_entity.dart';
+import 'package:socialix_flutter_nodejs/features/post/domain/entities/like_entity.dart';
 
 class PostEntity {
   final String postId;
-  final String postedBy;
+  final UserEntity postedBy;
   final String content;
   final String postImage;
   final DateTime timestamp;
-  final List<String>? likes;
+  final List<LikeEntity>? likes;
   final List<CommentEntity>? comments;
 
   PostEntity({

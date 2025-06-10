@@ -12,7 +12,6 @@ import 'package:socialix_flutter_nodejs/features/post/data/repositories/post_rep
 import 'package:socialix_flutter_nodejs/features/post/domain/usecases/create_post.dart';
 import 'package:socialix_flutter_nodejs/features/post/domain/usecases/get_posts.dart';
 import 'package:socialix_flutter_nodejs/features/post/presentation/blocs/post_bloc.dart';
-import 'package:socialix_flutter_nodejs/features/post/presentation/cubits/image_picker_cubit.dart';
 import 'package:socialix_flutter_nodejs/injection/service_locator.dart';
 
 void main() async {
@@ -63,7 +62,6 @@ class MyApp extends StatelessWidget {
                   AuthStateCubit(authRepository: sl<AuthRepositoryImpl>()),
         ),
         BlocProvider(create: (context) => PostBloc(createPost: createPost,getPosts: getPosts)),
-        BlocProvider(create: (context) => ImagePickerCubit()),
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,

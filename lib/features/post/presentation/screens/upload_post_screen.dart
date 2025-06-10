@@ -47,12 +47,12 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
         padding: const EdgeInsets.all(16),
         child: BlocConsumer<PostBloc, PostState?>(
           listener: (context, state) {
-            if (state is PostSuccessState) {
+            if (state is PostsSuccessState) {
               showToast('Post created successfully!');
               context.pop();
             } else if (state is PostErrorState) {
               showToast(state.message.toString());
-            } else if (state is PostInitial) {
+            } else if (state is PostInitialState) {
               file = state.file!;
             }
           },
@@ -66,7 +66,6 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
                   keyboardType: TextInputType.multiline,
                 ),
                 const SizedBox(height: 20),
-
                 GestureDetector(
                   onTap: () => _onUploadImageTapped(context),
                   child: Container(

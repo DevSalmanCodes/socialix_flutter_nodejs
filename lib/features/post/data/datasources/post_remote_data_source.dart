@@ -62,8 +62,9 @@ class PostRemoteDataSource implements IPostRemoteDataSource {
         },
       ),
     );
-    print(res.data);
-    return res.data['posts'].map((post) => PostModel.fromJson(post)).toList();
+    final data = res.data['data'] as List;
+
+    return data.map((post) => PostModel.fromJson(post)).toList();
   }
 
   @override

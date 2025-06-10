@@ -1,4 +1,6 @@
+import 'package:socialix_flutter_nodejs/features/auth/data/models/user_model.dart';
 import 'package:socialix_flutter_nodejs/features/post/data/models/comment_model.dart';
+import 'package:socialix_flutter_nodejs/features/post/data/models/like_model.dart';
 import 'package:socialix_flutter_nodejs/features/post/domain/entities/post_entity.dart';
 
 class PostModel extends PostEntity {
@@ -17,12 +19,13 @@ class PostModel extends PostEntity {
       postId: json['_id'],
       content: json['content'],
       postImage: json['postImage'] ?? '',
-      postedBy: json['postedBy'],
-      likes:
-          json['likes'] != null
-              ? (List<String>.from(json['likes'].map((like) => like['_id']))
-                  as List<String>?)
-              : [],
+      postedBy: UserModel.fromJson(json['postedBy']),
+      likes: List<LikeModel>.from(
+        json['likes'] != null
+            ? json['likes'].map((like) => LikeModel.fromJson(like))
+            : [],
+      ),
+
       comments: List<CommentModel>.from(
         json['comments'] != null
             ? json['comments'].map((comment) => CommentModel.fromJson(comment))

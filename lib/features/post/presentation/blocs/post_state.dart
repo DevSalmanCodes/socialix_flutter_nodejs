@@ -2,21 +2,23 @@ import 'dart:io';
 
 import 'package:socialix_flutter_nodejs/features/post/domain/entities/post_entity.dart';
 
+
 abstract class PostState {}
 
-class PostInitial extends PostState{
+class PostInitialState extends PostState{
   final File? file;
 
-  PostInitial({ this.file});
+  PostInitialState({ this.file});
 
 }
 class PostLoadingState extends PostState {}
 
-class PostSuccessState extends PostState {
-  final dynamic data;
-  PostSuccessState(this.data);
-}
 
+class PostsSuccessState extends PostState {
+  final List<PostEntity>? posts;
+
+  PostsSuccessState({this.posts});
+}
 class PostErrorState extends PostState {
   final String? message;
 

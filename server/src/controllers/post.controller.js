@@ -11,16 +11,28 @@ class PostController {
             return res.status(400).json(new ApiError(400, "Content or post image is required"));
         }
         try {
-            const uploadRes = await uploadOnCloudinary(postImage);
-            const post = await Post.create({
+            let uploadRes;
+            if (postImage) {
+                uploadRes = await uploadOnCloudinary(postImage);
+            }
+            const newPost = await Post.create({
                 content: content,
                 postImage: uploadRes?.url || "",
                 postedBy: req.user._id,
             });
+            const populatedPost = await Post.findById(newPost._id).populate("postedBy", "username email avatar coverImage bio");
+            const postWithAvatarUrl = {
+                ...populatedPost.toObject(),
+                postedBy: {
+                  ...populatedPost.postedBy.toObject(),
+                  avatar: populatedPost.postedBy.avatar?.url || "",
+                },
+              };
             return res.status(201).json({
                 message: "Post created successfully",
-                post: post,
+                post: postWithAvatarUrl,
             });
+            
         } catch (err) {
             return res.status(500).json(new ApiError(500, "Internal server error" || err?.message));
         }
@@ -46,29 +58,34 @@ class PostController {
                 },
                 {
                     $lookup: {
-                      from: 'users',
-                      localField: 'postedBy',
-                      foreignField: '_id',
-                      as: 'postedBy'
+                        from: 'users',
+                        localField: 'postedBy',
+                        foreignField: '_id',
+                        as: 'postedBy'
                     }
-                  },
-                  {
+                },
+                {
                     $unwind: '$postedBy'
-                  },
-                  {
+                },
+                {
                     $project: {
-                      content: 1,
-                      postImage: 1,
-                      likes: 1,
-                      comments: 1,
-                      createdAt: 1,
-                      updatedAt: 1,
-                      postedBy: {
-                        _id: 1,
-                        username: 1
-                      }
+                        content: 1,
+                        postImage: 1,
+                        likes: 1,
+                        comments: 1,
+                        createdAt: 1,
+                        updatedAt: 1,
+                        postedBy: {
+                            _id: 1,
+                            username: 1,
+                            email: 1,
+                            coverImage: 1,
+                            avatar: "$postedBy.avatar.url",
+                            bio: 1,
+
+                        }
                     }
-                  },
+                },
                 {
                     $sort: { createdAt: -1 }
                 }

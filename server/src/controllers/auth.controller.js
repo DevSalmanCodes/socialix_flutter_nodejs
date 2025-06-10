@@ -42,7 +42,7 @@ class AuthController {
       });
       user.avatar = user.avatar.url;
       user.password = undefined;
-      user.accesToken = undefined;
+      user.accessToken = undefined;
       user.refreshToken = undefined;
       return res
         .status(201)

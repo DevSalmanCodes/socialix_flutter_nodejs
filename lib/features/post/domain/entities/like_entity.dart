@@ -1,7 +1,7 @@
 class LikeEntity {
-  final String likeBy;
+  final String likedBy;
   final String postId;
 
-  LikeEntity({required this.likeBy, required this.postId});
+  LikeEntity({required this.likedBy, required this.postId});
 
 }

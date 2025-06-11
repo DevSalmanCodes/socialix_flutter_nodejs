@@ -7,9 +7,8 @@ import 'package:socialix_flutter_nodejs/core/utils/pick_image.dart';
 import 'package:socialix_flutter_nodejs/core/utils/show_toast.dart';
 import 'package:socialix_flutter_nodejs/core/widgets/custom_button.dart';
 import 'package:socialix_flutter_nodejs/core/widgets/custom_text_field.dart';
-import 'package:socialix_flutter_nodejs/features/post/presentation/blocs/post_bloc.dart';
-import 'package:socialix_flutter_nodejs/features/post/presentation/blocs/post_event.dart';
-import 'package:socialix_flutter_nodejs/features/post/presentation/blocs/post_state.dart';
+import 'package:socialix_flutter_nodejs/features/post/presentation/cubits/create_post_cubit.dart';
+import 'package:socialix_flutter_nodejs/features/post/presentation/cubits/create_post_state.dart';
 
 class UploadPostScreen extends StatefulWidget {
   const UploadPostScreen({super.key});
@@ -25,7 +24,7 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
   Future<void> _onUploadImageTapped(BuildContext context) async {
     final res = await pickImage();
     if (res != null && res.isNotEmpty) {
-      context.read<PostBloc>().add(UpdateImageEvent(file: File(res)));
+      context.read<CreatePostCubit>().updateImage(res);
     }
   }
 
@@ -45,14 +44,14 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
       appBar: AppBar(title: const Text("Create Post"), centerTitle: true),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
-        child: BlocConsumer<PostBloc, PostState?>(
+        child: BlocConsumer<CreatePostCubit, CreatePostState?>(
           listener: (context, state) {
-            if (state is PostsSuccessState) {
+            if (state is CreatePostSuccessState) {
               showToast('Post created successfully!');
               context.pop();
-            } else if (state is PostErrorState) {
+            } else if (state is CreatePostErrorState) {
               showToast(state.message.toString());
-            } else if (state is PostInitialState) {
+            } else if (state is CreatePostInitialState) {
               file = state.file!;
             }
           },
@@ -99,14 +98,12 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
 
                 CustomButton(
                   onTap:
-                      () => context.read<PostBloc>().add(
-                        CreatePostEvent(
-                          file: file,
-                          content: contentController.text.trim(),
-                        ),
+                      () => context.read<CreatePostCubit>().createPost(
+                        contentController.text.trim(),
+                        file?.path,
                       ),
                   text: 'Post',
-                  isLoading: state is PostLoadingState,
+                  isLoading: state is CreatePostLoadingState,
                 ),
               ],
             );

@@ -15,3 +15,15 @@ class UpdateImageEvent extends PostEvent {
   UpdateImageEvent({required this.file});
 }
 class GetPostsEvent extends PostEvent {}
+class ToggleLikeEvent extends PostEvent {
+  final String postId;
+
+  ToggleLikeEvent({required this.postId});
+  
+}
+class PostDeleteEvent extends PostEvent{
+ final String postId;
+
+  PostDeleteEvent({required this.postId});
+
+}

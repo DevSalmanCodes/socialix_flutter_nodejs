@@ -5,6 +5,6 @@ abstract class IPostRepository{
   Future<PostEntity> getPostById(int id);
   Future<PostEntity> createPost(String content, String imagePath);
   Future<PostEntity> updatePost(PostEntity post);
-  Future<void> deletePost(int id);
-  Future<PostEntity> likePost(int postId, String userId);
+  Future<void> deletePost(String postId);
+  Future<void> toggleLike(String postId);
 }

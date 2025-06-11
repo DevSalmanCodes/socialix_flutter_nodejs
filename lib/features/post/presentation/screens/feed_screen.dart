@@ -41,7 +41,12 @@ class _FeedScreenState extends State<FeedScreen> {
       body: BlocConsumer<PostBloc, PostState>(
         listener: (context, state) {
           if (state is PostErrorState) {
-            showToast(state.message.toString());
+            if (state.message == 'Token expired') {
+              showToast('Session expired, please login again');
+              context.pushReplacement('/login');
+            } else {
+              showToast(state.message.toString());
+            }
           }
         },
         builder: (context, state) {
@@ -67,5 +72,3 @@ class _FeedScreenState extends State<FeedScreen> {
     );
   }
 }
-
-

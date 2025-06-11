@@ -2,6 +2,7 @@ import Post from "../models/post.model.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResonse.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import Like from "../models/like.model.js";
 class PostController {
     static async createPost(req, res) {
         const { content } = req.body;
@@ -24,15 +25,15 @@ class PostController {
             const postWithAvatarUrl = {
                 ...populatedPost.toObject(),
                 postedBy: {
-                  ...populatedPost.postedBy.toObject(),
-                  avatar: populatedPost.postedBy.avatar?.url || "",
+                    ...populatedPost.postedBy.toObject(),
+                    avatar: populatedPost.postedBy.avatar?.url || "",
                 },
-              };
+            };
             return res.status(201).json({
                 message: "Post created successfully",
                 post: postWithAvatarUrl,
             });
-            
+
         } catch (err) {
             return res.status(500).json(new ApiError(500, "Internal server error" || err?.message));
         }
@@ -46,15 +47,15 @@ class PostController {
                         localField: "_id",
                         foreignField: "postId",
                         as: "likes",
-                    },
-
+                    }
+                },
+                {
                     $lookup: {
                         from: "comments",
                         localField: "_id",
-                        foreignField: "postId",
+                        foreignField: "post",
                         as: "comments",
-                    },
-
+                    }
                 },
                 {
                     $lookup: {
@@ -76,13 +77,12 @@ class PostController {
                         createdAt: 1,
                         updatedAt: 1,
                         postedBy: {
-                            _id: 1,
-                            username: 1,
-                            email: 1,
-                            coverImage: 1,
-                            avatar: "$postedBy.avatar.url",
-                            bio: 1,
-
+                            _id: '$postedBy._id',
+                            username: '$postedBy.username',
+                            email: '$postedBy.email',
+                            coverImage: '$postedBy.coverImage',
+                            avatar: '$postedBy.avatar.url',
+                            bio: '$postedBy.bio',
                         }
                     }
                 },
@@ -94,6 +94,42 @@ class PostController {
 
         } catch (err) {
             return res.status(500).json(new ApiError(500, "Internal server error" || err?.message));
+        }
+    }
+
+    static async toggleLike(req, res) {
+        const { postId } = req.params;
+        const userId = req.user._id;
+
+        try {
+            const existingLikePost = await Like.findOne({ postId: postId, likedBy: userId });
+            if (existingLikePost) {
+                await existingLikePost.deleteOne();
+                return res.status(200).json(new ApiResponse(200, "Post unliked successfully"));
+            } else {
+                await Like.create({ postId: postId, likedBy: userId });
+
+                return res.status(201).json(new ApiResponse(201, "Post liked successfully"));
+            }
+        } catch (err) {
+            return res.status(500).json(new ApiError(500, "Internal server error" || err?.message));
+        }
+    }
+
+    static async deletePost(req, res) {
+        const { postId } = req.params;
+        try {
+            const post = await Post.findById(postId);
+            if (!post) {
+                return res.status(400).json(new ApiError(400, "Post not found"));
+            }
+            if (post.postedBy.toString() !== req.user._id.toString()) {
+                return res.status(401).json(new ApiError(401, "You are not authorized to delete this post"),);
+            }
+            await post.deleteOne();
+            return res.status(200).json(new ApiResponse(200, "Post deleted successfully", post),)
+        } catch (err) {
+            return res.status(401).json(new ApiError(401, "Internal server error" || err?.message),);
         }
     }
 }

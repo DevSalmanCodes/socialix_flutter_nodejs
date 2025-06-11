@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:socialix_flutter_nodejs/core/errors/exceptions.dart';
+import 'package:socialix_flutter_nodejs/core/services/auth_service.dart';
 import 'package:socialix_flutter_nodejs/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:socialix_flutter_nodejs/features/auth/data/datasources/auth_secure_local_data_source.dart';
 import 'package:socialix_flutter_nodejs/features/auth/domain/entities/user_entity.dart';
@@ -8,7 +9,9 @@ import 'package:socialix_flutter_nodejs/features/auth/domain/repositories/auth_r
 class AuthRepositoryImpl implements IAuthRepository {
   final AuthRemoteDataSource remoteDataSource;
   final AuthSecureLocalDataSource secureLocalDataSource;
+  final AuthService authService;
   AuthRepositoryImpl({
+    required this.authService,
     required this.remoteDataSource,
     required this.secureLocalDataSource,
   });
@@ -30,8 +33,11 @@ class AuthRepositoryImpl implements IAuthRepository {
   Future<UserEntity> loginUser(String email, String password) async {
     try {
       final user = await remoteDataSource.loginUser(email, password);
-      await secureLocalDataSource.saveToken('accessToken', user.accessToken!);
-      await secureLocalDataSource.saveToken('refreshToken', user.refreshToken!);
+      Future.wait([
+        secureLocalDataSource.saveToken('accessToken', user.accessToken!),
+        secureLocalDataSource.saveToken('refreshToken', user.refreshToken!),
+      ]);
+      await authService.setUser(user);
       return user;
     } on DioException catch (e) {
       throw ServerException(e.response?.data['message'] ?? 'Unexpected error');

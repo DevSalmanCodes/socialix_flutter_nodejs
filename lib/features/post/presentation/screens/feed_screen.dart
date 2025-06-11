@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:socialix_flutter_nodejs/core/constants/app_constants.dart';
 import 'package:socialix_flutter_nodejs/core/utils/show_toast.dart';
 import 'package:socialix_flutter_nodejs/features/post/presentation/blocs/post_bloc.dart';
 import 'package:socialix_flutter_nodejs/features/post/presentation/blocs/post_event.dart';
@@ -41,8 +42,8 @@ class _FeedScreenState extends State<FeedScreen> {
       body: BlocConsumer<PostBloc, PostState>(
         listener: (context, state) {
           if (state is PostErrorState) {
-            if (state.message == 'Token expired') {
-              showToast('Session expired, please login again');
+            if (state.message == AppConstants.tokenExpired) {
+              showToast(AppConstants.sessionExpired);
               context.pushReplacement('/login');
             } else {
               showToast(state.message.toString());

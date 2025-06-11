@@ -6,7 +6,7 @@ abstract class IPostRemoteDataSource {
   Future<PostModel> getPostById(int id);
   Future<PostModel> createPost(String content, String imagePath, String token);
   Future<PostModel> updatePost();
-  Future<void> deletePost(String postId,String token);
+  Future<void> deletePost(String postId, String token);
   Future<void> toggleLike(String postId, String token);
 }
 
@@ -43,10 +43,11 @@ class PostRemoteDataSource implements IPostRemoteDataSource {
   }
 
   @override
-  Future<void> deletePost(String postId,String token) async{
-  await dio.delete('$baseUrl/$postId/delete',options: Options(headers: {
-      'Authorization':'Bearer $token'
-    }));
+  Future<void> deletePost(String postId, String token) async {
+    await dio.delete(
+      '$baseUrl/$postId/delete',
+      options: Options(headers: {'Authorization': 'Bearer $token'}),
+    );
   }
 
   @override
@@ -71,9 +72,10 @@ class PostRemoteDataSource implements IPostRemoteDataSource {
 
   @override
   Future<void> toggleLike(String postId, String token) async {
-    await dio.put(
+    final res = await dio.put(
       '$baseUrl/$postId/toggle-like',
       options: Options(headers: {'Authorization': 'Beareer $token'}),
     );
+    print(res.data);
   }
 }

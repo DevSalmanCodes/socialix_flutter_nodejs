@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:socialix_flutter_nodejs/core/constants/app_constants.dart';
 import 'package:socialix_flutter_nodejs/core/utils/pick_image.dart';
 import 'package:socialix_flutter_nodejs/core/utils/show_toast.dart';
 import 'package:socialix_flutter_nodejs/core/widgets/custom_button.dart';
@@ -24,7 +25,9 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
   Future<void> _onUploadImageTapped(BuildContext context) async {
     final res = await pickImage();
     if (res != null && res.isNotEmpty) {
-      context.read<CreatePostCubit>().updateImage(res);
+      if (context.mounted) {
+        context.read<CreatePostCubit>().updateImage(res);
+      }
     }
   }
 
@@ -50,6 +53,10 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
               showToast('Post created successfully!');
               context.pop();
             } else if (state is CreatePostErrorState) {
+              if (state.message == 'Token expired') {
+                showToast(AppConstants.sessionExpired);
+                context.pushReplacement('/login');
+              }
               showToast(state.message.toString());
             } else if (state is CreatePostInitialState) {
               file = state.file!;

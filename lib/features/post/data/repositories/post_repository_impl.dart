@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:socialix_flutter_nodejs/core/constants/app_constants.dart';
 import 'package:socialix_flutter_nodejs/core/errors/exceptions.dart';
 import 'package:socialix_flutter_nodejs/core/services/auth_service.dart';
 import 'package:socialix_flutter_nodejs/features/post/data/datasources/post_remote_data_source.dart';
@@ -15,7 +16,11 @@ class PostRepositoryImpl extends IPostRepository {
   @override
   Future<PostEntity> createPost(String content, String imagePath) async {
     try {
-      return remoteDataSource.createPost(content, imagePath, authService.currentUser!.accessToken!);
+      return remoteDataSource.createPost(
+        content,
+        imagePath,
+        authService.currentUser!.accessToken!,
+      );
     } on DioException catch (e) {
       throw ServerException(e.response?.data['message'] ?? 'Unexpected Error');
     } catch (e) {
@@ -31,6 +36,7 @@ class PostRepositoryImpl extends IPostRepository {
         authService.currentUser!.accessToken!,
       );
     } on DioException catch (e) {
+      _clearUserIfTokenExpired(e);
       throw ServerException(e.response?.data['message'] ?? 'Unexpected Error');
     } catch (e) {
       throw ServerException(e.toString());
@@ -45,8 +51,11 @@ class PostRepositoryImpl extends IPostRepository {
   @override
   Future<List<PostEntity>> getPosts() async {
     try {
-      return await remoteDataSource.getPosts(authService.currentUser!.accessToken!);
+      return await remoteDataSource.getPosts(
+        authService.currentUser!.accessToken!,
+      );
     } on DioException catch (e) {
+      _clearUserIfTokenExpired(e);
       throw ServerException(e.response?.data['message'] ?? 'Unexpected Error');
     } catch (e) {
       throw ServerException(e.toString());
@@ -56,8 +65,12 @@ class PostRepositoryImpl extends IPostRepository {
   @override
   Future<void> toggleLike(String postId) async {
     try {
-      return await remoteDataSource.toggleLike(postId, authService.currentUser!.accessToken!);
+      return await remoteDataSource.toggleLike(
+        postId,
+        authService.currentUser!.accessToken!,
+      );
     } on DioException catch (e) {
+      _clearUserIfTokenExpired(e);
       throw ServerException(e.response?.data['message'] ?? 'Unexpected Error');
     } catch (e) {
       throw ServerException(e.toString());
@@ -67,5 +80,12 @@ class PostRepositoryImpl extends IPostRepository {
   @override
   Future<PostEntity> updatePost(PostEntity post) {
     throw UnimplementedError();
+  }
+
+  void _clearUserIfTokenExpired(DioException e) async {
+    final errorMessage = e.response?.data['message'];
+    if (errorMessage == AppConstants.tokenExpired) {
+      await authService.clearUser();
+    }
   }
 }

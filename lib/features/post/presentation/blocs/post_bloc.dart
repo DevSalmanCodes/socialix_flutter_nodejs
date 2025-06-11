@@ -28,33 +28,28 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       final posts = await getPosts();
       emit(PostsSuccessState(posts: posts));
     } on ServerException catch (e) {
-      if (e.message == 'Token expired') {
-        emit(PostErrorState('Token expired'));
-      }
-    }
-  }
-
-  void _onToggleLikeEvent(ToggleLikeEvent event, Emitter<PostState> emit) {
-    try {
-      toggleLike(event.postId);
-    } on ServerException catch (e) {
       emit(PostErrorState(e.message.toString()));
     }
   }
 
-  void _onDeletePost(PostDeleteEvent event, Emitter<PostState> emit) {
+  void _onToggleLikeEvent(
+    ToggleLikeEvent event,
+    Emitter<PostState> emit,
+  ) async {
+    final res = await toggleLike(event.postId);
+    res.fold((l) => emit(PostErrorState(l.message.toString())), (r) => null);
+  }
+
+  void _onDeletePost(PostDeleteEvent event, Emitter<PostState> emit) async {
     List<PostEntity>? posts;
-    try {
-      deletePost(event.postId);
+    final res = await deletePost(event.postId);
+    res.fold((l) => emit(PostErrorState(l.message.toString())), (r) {
       if (state is PostsSuccessState) {
         posts = (state as PostsSuccessState).posts;
         posts?.removeWhere((post) => post.postId == event.postId);
+        showToast('Post deleted successfully');
+        emit(PostsSuccessState(posts: posts));
       }
-      emit(PostsSuccessState(posts: posts));
-
-      showToast('Post deleted successfully');
-    } on ServerException catch (e) {
-      showToast(e.message.toString());
-    }
+    });
   }
 }

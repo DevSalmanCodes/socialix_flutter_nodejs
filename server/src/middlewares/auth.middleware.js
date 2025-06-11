@@ -26,7 +26,6 @@ const isAuthorizedUser = (req, res,next) => {
     console.log(err);
 
     if (err.name === "TokenExpiredError") {
-
       return res.status(401).json(new ApiError(401, "Token expired"));
     } else if (err.name === "JsonWebTokenError") {
       return res.status(401).json(new ApiError(401, "Invalid token"));

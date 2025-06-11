@@ -46,9 +46,9 @@ class AuthRepositoryImpl implements IAuthRepository {
       final res = await remoteDataSource.logoutUser(
         authService.currentUser!.accessToken!,
       );
-
       return res;
     } on DioException catch (e) {
+      await authService.clearUser();
       throw ServerException(e.response?.data['message'] ?? 'Unexpected error');
     } catch (e) {
       throw ServerException(e.toString());

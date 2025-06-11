@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:socialix_flutter_nodejs/features/auth/data/datasources/auth_secure_local_data_source.dart';
 import 'package:socialix_flutter_nodejs/features/auth/data/models/user_model.dart';
+
 abstract class IAuthRemoteDataSource {
   Future<UserModel> singUpUser(
     String username,
@@ -11,17 +11,17 @@ abstract class IAuthRemoteDataSource {
 
   Future<UserModel> loginUser(String email, String password);
 
-  Future<UserModel> logoutUser();
+  Future<UserModel> logoutUser(String token);
 }
-class AuthRemoteDataSource implements IAuthRemoteDataSource{
+
+class AuthRemoteDataSourceImpl implements IAuthRemoteDataSource {
   late Dio dio;
-  final AuthSecureLocalDataSource secureLocalDataSource;
   final String baseUrl = 'http://localhost:3000/api/v1/auth/';
 
-  AuthRemoteDataSource({required this.secureLocalDataSource}) {
+  AuthRemoteDataSourceImpl() {
     dio = Dio();
   }
-@override
+  @override
   Future<UserModel> singUpUser(
     String username,
     String email,
@@ -49,7 +49,8 @@ class AuthRemoteDataSource implements IAuthRemoteDataSource{
     );
     return UserModel.fromJson(res.data['data']);
   }
-@override
+
+  @override
   Future<UserModel> loginUser(String email, String password) async {
     final res = await dio.post(
       '$baseUrl/login',
@@ -57,9 +58,9 @@ class AuthRemoteDataSource implements IAuthRemoteDataSource{
     );
     return UserModel.fromJson(res.data['data']);
   }
-@override
-  Future<UserModel> logoutUser() async {
-    final token = await secureLocalDataSource.getToken('accessToken');
+
+  @override
+  Future<UserModel> logoutUser(String token) async {
     final res = await dio.post(
       '$baseUrl/logout',
       options: Options(headers: {'Authorization': 'Bearer $token'}),

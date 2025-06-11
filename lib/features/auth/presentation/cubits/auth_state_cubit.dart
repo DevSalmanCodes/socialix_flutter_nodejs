@@ -10,11 +10,6 @@ class AuthStateCubit extends Cubit<UserAuthState> {
     _checkAuthState();
   }
   Future<void> _checkAuthState() async {
-    final res = await authRepository.isLoggedIn();
-    if (res == true) {
-      emit(UserAuthState.authenticated);
-    } else {
-      emit(UserAuthState.unauthenticated);
-    }
+    
   }
 }

@@ -11,5 +11,4 @@ abstract class IAuthRepository {
   Future<UserEntity> loginUser(String email, String password);
   Future<UserEntity> logoutUser();
 
-  Future<bool> isLoggedIn();
 }

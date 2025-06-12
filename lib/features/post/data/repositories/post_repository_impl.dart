@@ -37,7 +37,7 @@ class PostRepositoryImpl extends IPostRepository {
         authService.currentUser!.accessToken!,
       );
     } on DioException catch (e) {
-      _clearUserIfTokenExpired(e);
+       _clearUserIfTokenExpired(e);
       throw ServerException(e.response?.data['message'] ?? 'Unexpected Error');
     } catch (e) {
       throw ServerException(e.toString());

@@ -30,6 +30,23 @@ class AuthService {
     await secureStorage.delete(key: StorageKeys.user);
   }
 
+  Future<void> saveTokens(String accessToken, String refreshToken) async {
+    final secureStorage = sl<FlutterSecureStorage>();
+
+    await secureStorage.write(key: StorageKeys.accessToken, value: accessToken);
+    await secureStorage.write(
+      key: StorageKeys.refreshToken,
+      value: refreshToken,
+    );
+  }
+
+  Future<void> clearTokens() async {
+    final secureStorage = sl<FlutterSecureStorage>();
+    await secureStorage.deleteAll();
+  }
+
   String? get currentUserId => _currentUser?.id;
   bool get isLoggedIn => _currentUser != null;
+  String? get accessToken => _currentUser?.accessToken;
+  String? get refreshToken => _currentUser?.refreshToken;
 }

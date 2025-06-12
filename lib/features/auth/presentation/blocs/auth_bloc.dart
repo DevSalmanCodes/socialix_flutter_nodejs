@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:socialix_flutter_nodejs/core/errors/exceptions.dart';
 import 'package:socialix_flutter_nodejs/features/auth/domain/usecases/login_user.dart';
 import 'package:socialix_flutter_nodejs/features/auth/domain/usecases/logout_user.dart';
 import 'package:socialix_flutter_nodejs/features/auth/domain/usecases/sign_up_user.dart';
@@ -25,14 +24,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoadingState());
-    try {
-      final user = await loginUser(event.email, event.password);
-      emit(AuthSuccessState(data: user));
-    } on ServerException catch (e) {
-      emit(AuthErrorState(error: e.message.toString()));
-    } catch (e) {
-      emit(AuthErrorState(error: e.toString()));
-    }
+    final res = await loginUser(event.email, event.password);
+    res.fold(
+      (l) => emit(AuthErrorState(l.message)),
+      (r) => emit(AuthSuccessState(r)),
+    );
   }
 
   Future<void> _onSignUpRequested(
@@ -40,17 +36,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoadingState());
-    try {
-      final res = await signUpUser(
-        event.username,
-        event.email,
-        event.password,
-        event.imagepath,
-      );
-      emit(AuthSuccessState(data: res));
-    } catch (e) {
-      emit(AuthErrorState(error: e.toString()));
-    }
+    final res = await signUpUser(
+      event.username,
+      event.email,
+      event.password,
+      event.imagepath,
+    );
+    res.fold(
+      (l) => emit(AuthErrorState(l.message)),
+      (r) => emit(AuthSuccessState(r)),
+    );
   }
 
   Future<void> _onLogoutRequested(
@@ -58,11 +53,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoadingState());
-    try {
-      final res = await logoutUser();
-      emit(AuthSuccessState(data: res));
-    } on ServerException catch (e) {
-      emit(AuthErrorState(error: e.message.toString()));
-    }
+    final res = await logoutUser();
+    res.fold(
+      (l) => emit(AuthErrorState(l.message)),
+      (r) => AuthSuccessState(r),
+    );
   }
 }

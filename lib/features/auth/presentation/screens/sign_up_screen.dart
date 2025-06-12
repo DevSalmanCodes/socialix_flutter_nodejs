@@ -54,7 +54,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 }
                 if (state is AuthSuccessState) {
                   showToast('Account created successfuly');
-                  context.pushReplacement('/');
+                  context.pushReplacement('/login');
                 }
               },
               builder: (context, state) {
@@ -120,7 +120,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               imagepath: _imagePath,
                             ),
                           ),
-                      isLoading: state is! AuthLoadingState,
+                      isLoading: state is AuthLoadingState,
                     ),
                     const SizedBox(height: 16),
                     Text.rich(
@@ -136,7 +136,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             recognizer:
                                 TapGestureRecognizer()
-                                  ..onTap = () => context.push('/'),
+                                  ..onTap = () => context.push('/login'),
                           ),
                         ],
                       ),

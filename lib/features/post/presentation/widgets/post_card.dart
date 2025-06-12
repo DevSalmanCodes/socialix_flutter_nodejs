@@ -102,7 +102,11 @@ class _PostCardState extends State<PostCard> {
               ),
             ),
             trailing: GestureDetector(
-              onTapDown: (details) => _showPopUpMenu(details.globalPosition),
+              onTapDown:
+                  (details) => _showPopUpMenu(
+                    details.globalPosition,
+                    authService.currentUserId!,
+                  ),
               child: Icon(
                 PhosphorIcons.dotsThreeVertical(),
                 color: widget.theme.iconTheme.color,
@@ -194,22 +198,33 @@ class _PostCardState extends State<PostCard> {
     );
   }
 
-  void _showPopUpMenu(Offset offset) async {
+  void _showPopUpMenu(Offset offset, String currentUserId) async {
     final top = offset.dy;
     final left = offset.dx;
     return await showMenu(
       context: context,
       items: [
-        PopupMenuItem(
-          child: Text('Delete'),
-          onTap:
-              () => context.read<PostBloc>().add(
-                PostDeleteEvent(postId: widget.post.postId),
-              ),
-        ),
-        PopupMenuItem(child: Text('Edit')),
+        if (widget.post.postedBy.id == currentUserId) ...[
+          _buildMenuItem(
+            Icons.delete,
+            'Delete',
+            () => context.read<PostBloc>().add(
+              PostDeleteEvent(postId: widget.post.postId),
+            ),
+          ),
+          _buildMenuItem(Icons.edit, 'Edit', () {}),
+        ],
       ],
       position: RelativeRect.fromLTRB(left, top, 0, 0),
     );
   }
+
+  PopupMenuItem _buildMenuItem(
+    IconData icon,
+    String title,
+    VoidCallback onTap,
+  ) => PopupMenuItem(
+    onTap: onTap,
+    child: Row(children: [Icon(icon), Text(title)]),
+  );
 }

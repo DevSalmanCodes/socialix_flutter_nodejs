@@ -8,10 +8,10 @@ class AuthLoadingState extends AuthState {}
 
 class AuthSuccessState extends AuthState {
   final UserEntity data;
-  AuthSuccessState({required this.data});
+  AuthSuccessState( this.data);
 }
 
 class AuthErrorState extends AuthState {
   final String error;
-  AuthErrorState({required this.error});
+  AuthErrorState(this.error);
 }

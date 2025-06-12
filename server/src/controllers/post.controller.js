@@ -36,7 +36,7 @@ class PostController {
 
         } catch (err) {
             return res.status(500).json(new ApiError(500, "Internal server error" || err?.message));
-        }
+        } s
     }
     static async getPosts(req, res) {
         try {

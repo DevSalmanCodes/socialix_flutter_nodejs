@@ -16,12 +16,13 @@ class PostRepositoryImpl extends IPostRepository {
   @override
   Future<PostEntity> createPost(String content, String imagePath) async {
     try {
-      return remoteDataSource.createPost(
+      return await remoteDataSource.createPost(
         content,
         imagePath,
         authService.currentUser!.accessToken!,
       );
     } on DioException catch (e) {
+      _clearUserIfTokenExpired(e);
       throw ServerException(e.response?.data['message'] ?? 'Unexpected Error');
     } catch (e) {
       throw ServerException(e.toString());

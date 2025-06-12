@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:socialix_flutter_nodejs/core/routing/router.dart';
 import 'package:socialix_flutter_nodejs/core/services/auth_service.dart';
 import 'package:socialix_flutter_nodejs/core/theme/app_theme.dart';
@@ -9,7 +8,6 @@ import 'package:socialix_flutter_nodejs/features/auth/domain/usecases/login_user
 import 'package:socialix_flutter_nodejs/features/auth/domain/usecases/logout_user.dart';
 import 'package:socialix_flutter_nodejs/features/auth/domain/usecases/sign_up_user.dart';
 import 'package:socialix_flutter_nodejs/features/auth/presentation/blocs/auth_bloc.dart';
-import 'package:socialix_flutter_nodejs/features/auth/presentation/cubits/auth_state_cubit.dart';
 import 'package:socialix_flutter_nodejs/features/post/data/repositories/post_repository_impl.dart';
 import 'package:socialix_flutter_nodejs/features/post/domain/usecases/create_post.dart';
 import 'package:socialix_flutter_nodejs/features/post/domain/usecases/delete_post.dart';
@@ -32,7 +30,7 @@ void main() async {
       logoutUser: LogoutUser(authRepository: authRepositoryImpl),
       createPost: CreatePost(postRepository: postRepositoryImpl),
       getPosts: GetPosts(postRepository: postRepositoryImpl),
-      toggleLike: ToggleLike(postRepository: sl<PostRepositoryImpl>()),
+      toggleLike: ToggleLike(postRepository: postRepositoryImpl),
       deletePost: DeletePost(postRepository: postRepositoryImpl),
     ),
   );
@@ -69,11 +67,7 @@ class MyApp extends StatelessWidget {
                 logoutUser: logoutUser,
               ),
         ),
-        BlocProvider(
-          create:
-              (context) =>
-                  AuthStateCubit(authRepository: sl<AuthRepositoryImpl>()),
-        ),
+
         BlocProvider(
           create:
               (context) => PostBloc(

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:socialix_flutter_nodejs/core/services/auth_service.dart';
 import 'package:socialix_flutter_nodejs/features/post/data/models/post_model.dart';
 
 abstract class IPostRemoteDataSource {
@@ -11,11 +12,11 @@ abstract class IPostRemoteDataSource {
 }
 
 class PostRemoteDataSource implements IPostRemoteDataSource {
-  late Dio dio;
-  PostRemoteDataSource() {
-    dio = Dio();
-  }
+  final Dio dio;
+  final AuthService authService;
   final String baseUrl = 'http://localhost:3000/api/v1/post/';
+
+  PostRemoteDataSource({required this.dio, required this.authService});
   @override
   Future<PostModel> createPost(
     String content,
@@ -57,9 +58,12 @@ class PostRemoteDataSource implements IPostRemoteDataSource {
 
   @override
   Future<List<PostModel>> getPosts(String token) async {
+    await authService.ensureTokenIsValid();
     final res = await dio.get(
       '$baseUrl/get',
-      options: Options(headers: {'Authorization': 'Bearer $token'}),
+      options: Options(
+        headers: {'Authorization': 'Bearer ${authService.accessToken}'},
+      ),
     );
     final data = res.data['data'] as List;
     return data.map((post) => PostModel.fromJson(post)).toList();
@@ -72,10 +76,12 @@ class PostRemoteDataSource implements IPostRemoteDataSource {
 
   @override
   Future<void> toggleLike(String postId, String token) async {
+    await authService.ensureTokenIsValid();
     final res = await dio.put(
       '$baseUrl/$postId/toggle-like',
-      options: Options(headers: {'Authorization': 'Beareer $token'}),
+      options: Options(
+        headers: {'Authorization': 'Bearer ${authService.accessToken}'},
+      ),
     );
-    print(res.data);
   }
 }

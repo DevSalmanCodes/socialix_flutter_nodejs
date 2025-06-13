@@ -19,10 +19,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _checkAuthStateAndNavigate() async {
     final authService = sl<AuthService>();
-    final bool isLoggedIn = authService.isLoggedIn;
+    final accessToken = authService.accessToken;
     await Future.delayed(const Duration(milliseconds: 500));
     if (mounted) {
-      if (isLoggedIn) {
+      if (accessToken != null) {
         context.pushReplacement('/feed');
       } else {
         context.pushReplacement('/login');

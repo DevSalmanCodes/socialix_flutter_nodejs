@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:socialix_flutter_nodejs/core/constants/endpoints_constants.dart';
 import 'package:socialix_flutter_nodejs/features/auth/data/models/user_model.dart';
 
 abstract class IAuthRemoteDataSource {
@@ -15,12 +16,9 @@ abstract class IAuthRemoteDataSource {
 }
 
 class AuthRemoteDataSourceImpl implements IAuthRemoteDataSource {
-  late Dio dio;
-  final String baseUrl = 'http://localhost:3000/api/v1/auth/';
+  final Dio dio;
 
-  AuthRemoteDataSourceImpl() {
-    dio = Dio();
-  }
+  AuthRemoteDataSourceImpl({required this.dio});
   @override
   Future<UserModel> singUpUser(
     String username,
@@ -44,7 +42,7 @@ class AuthRemoteDataSourceImpl implements IAuthRemoteDataSource {
       });
     }
     final res = await dio.post(
-      '$baseUrl/register',
+      '/register',
       data: avatarPath != '' ? formData : rawData,
     );
     return UserModel.fromJson(res.data['data']);
@@ -53,7 +51,7 @@ class AuthRemoteDataSourceImpl implements IAuthRemoteDataSource {
   @override
   Future<UserModel> loginUser(String email, String password) async {
     final res = await dio.post(
-      '$baseUrl/login',
+      '${EndpointsConstants.baseUrl}/auth/login',
       data: {'email': email, 'password': password},
     );
     return UserModel.fromJson(res.data['data']);
@@ -62,7 +60,7 @@ class AuthRemoteDataSourceImpl implements IAuthRemoteDataSource {
   @override
   Future<UserModel> logoutUser(String token) async {
     final res = await dio.post(
-      '$baseUrl/logout',
+      '/logout',
       options: Options(headers: {'Authorization': 'Bearer $token'}),
     );
     return UserModel.fromJson(res.data['data']);

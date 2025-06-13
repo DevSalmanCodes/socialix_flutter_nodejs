@@ -20,7 +20,7 @@ import 'package:socialix_flutter_nodejs/injection/service_locator.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initDependencies();
-  await sl<AuthService>().loadUserFromStorage();
+  await sl<AuthService>().init();
   final AuthRepositoryImpl authRepositoryImpl = sl<AuthRepositoryImpl>();
   final PostRepositoryImpl postRepositoryImpl = sl<PostRepositoryImpl>();
   runApp(

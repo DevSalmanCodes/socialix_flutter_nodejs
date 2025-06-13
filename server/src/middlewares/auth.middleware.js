@@ -3,17 +3,12 @@ import jwt from "jsonwebtoken";
 const isAuthorizedUser = (req, res,next) => {
 
   try {
-
-    const { authorization } = req.headers;
-
+    const { authorization } = req.headers;        
     if (!authorization) {
-
       return res.status(401).json(new ApiError(401, "Unauthorized"));
     }
     const token = authorization.split(" ")[1];
-
-    const decodedToken = jwt.verify(token, "4ak64a3m3o9avbxzsq20",);
-
+    const decodedToken = jwt.verify(token, "4ak64a3m3o9avbxzsq20",);    
     if (!decodedToken) {
 
       return res.status(401).json(new ApiError(401, "Unauthorized"));

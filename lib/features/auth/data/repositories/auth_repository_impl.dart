@@ -30,8 +30,8 @@ class AuthRepositoryImpl implements IAuthRepository {
   Future<UserEntity> loginUser(String email, String password) async {
     try {
       final user = await remoteDataSource.loginUser(email, password);
-
       await authService.setUser(user);
+      await authService.saveTokens(user.accessToken!, user.refreshToken!);
       return user;
     } on DioException catch (e) {
       throw ServerException(e.response?.data['message'] ?? 'Unexpected error');

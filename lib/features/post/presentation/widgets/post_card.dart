@@ -66,6 +66,9 @@ class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     final authService = sl<AuthService>();
+    if (authService.currentUser == null) {
+      return SizedBox();
+    }
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(

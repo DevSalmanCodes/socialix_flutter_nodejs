@@ -60,7 +60,7 @@ userSchema.methods.generateAccessToken = (userId) => {
   return jwt.sign({_id:userId}, "4ak64a3m3o9avbxzsq20",{expiresIn:"10s"});
 };
 userSchema.methods.generateRefreshToken = (userId) => {
-  return jwt.sign({_id:userId}, "4ak64a3m3o9avbxzsq20",{expiresIn:"10s"});
+  return jwt.sign({_id:userId}, "4ak64a3m3o9avbxzsq20",{expiresIn:"1d"});
 };
 const User = mongoose.model("User", userSchema);
 export default User;

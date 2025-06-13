@@ -48,6 +48,8 @@ dependencies:
   cached_network_image: ^3.4.1
   timeago: ^3.7.1
   fpdart: ^1.1.1
+  jwt_decoder: ^2.0.1
+  
 
 dev_dependencies:
   flutter_test:

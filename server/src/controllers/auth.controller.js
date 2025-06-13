@@ -58,7 +58,7 @@ class AuthController {
   }
 
   async login(req, res) {
-    
+
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -91,10 +91,10 @@ class AuthController {
       };
       user.refreshToken = refreshToken;
       user.accessToken = accessToken;
-
+      await user.save();
       user.password = undefined;
       user.avatar = user.avatar.url;
-      
+
       return res
         .status(200)
         .cookie("accessToken", accessToken, options)
@@ -125,7 +125,7 @@ class AuthController {
         { new: true }
       );
       user.password = undefined;
-      
+
       user.avatar = null;
       const options = {
         httpOnly: true,
@@ -147,16 +147,17 @@ class AuthController {
   async refreshAccessToken(req, res) {
     const incomingRefreshToken =
       req.cookies.refreshToken || req.body.refreshToken;
+
     if (!incomingRefreshToken) {
       return res.status(401).json(new ApiError(401, "Unauthorized request"));
     }
     try {
       const decodedToken = jwt.verify(
         incomingRefreshToken,
-        process.env.JWT_SECRET
+        "4ak64a3m3o9avbxzsq20",
       );
-
       const user = await User.findById(decodedToken?._id);
+
       if (!user) {
         return res.status(404).json(new ApiError(404, "Unauthorized request"));
       }
@@ -165,7 +166,10 @@ class AuthController {
       }
       const accessToken = user.generateAccessToken(user?._id);
       const refreshToken = user.generateRefreshToken(user?._id);
-
+      user.refreshToken = refreshToken;
+      console.log(user?.refreshToken === incomingRefreshToken);
+      
+      await user.save();
       const options = {
         httpOnly: true,
         secure: true,

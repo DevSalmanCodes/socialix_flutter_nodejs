@@ -6,6 +6,6 @@ const router = express.Router();
 router.route("/register").post(upload.single("image"), AuthController.register);
 
 router.route("/login").post(AuthController.login);
-router.route("/logout").post(isAuthorizedUser,AuthController.logout);
-
+router.route("/logout").post(isAuthorizedUser, AuthController.logout);
+router.route("/refresh-token").post(AuthController.refreshAccessToken);
 export default router;

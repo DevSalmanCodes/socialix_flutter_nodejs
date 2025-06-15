@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:socialix_flutter_nodejs/core/services/auth_service.dart';
@@ -80,13 +81,16 @@ class _PostCardState extends State<PostCard> {
         children: [
           ListTile(
             contentPadding: const EdgeInsets.all(12),
-            leading: CircleAvatar(
-              radius: 24,
-              backgroundColor: widget.theme.primaryColor.withOpacity(0.2),
-              backgroundImage: NetworkImage(
-                widget.post.postedBy.avatar != ''
-                    ? widget.post.postedBy.avatar!
-                    : 'https://img.freepik.com/premium-vector/profile-picture-placeholder-avatar-silhouette-gray-tones-icon-colored-shapes-gradient_1076610-40164.jpg',
+            leading: GestureDetector(
+              onTap: () => context.push('/profile/${widget.post.postedBy.id}'),
+              child: CircleAvatar(
+                radius: 24,
+                backgroundColor: widget.theme.primaryColor.withOpacity(0.2),
+                backgroundImage: NetworkImage(
+                  widget.post.postedBy.avatar != ''
+                      ? widget.post.postedBy.avatar!
+                      : 'https://img.freepik.com/premium-vector/profile-picture-placeholder-avatar-silhouette-gray-tones-icon-colored-shapes-gradient_1076610-40164.jpg',
+                ),
               ),
             ),
             title: Text(

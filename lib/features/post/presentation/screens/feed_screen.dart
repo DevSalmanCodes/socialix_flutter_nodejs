@@ -39,6 +39,7 @@ class _FeedScreenState extends State<FeedScreen> {
           ),
         ],
       ),
+
       body: BlocConsumer<PostBloc, PostState>(
         listener: (context, state) {
           if (state is PostErrorState) {

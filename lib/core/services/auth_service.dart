@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:socialix_flutter_nodejs/core/constants/endpoints_constants.dart';
 import 'package:socialix_flutter_nodejs/core/constants/storage_keys.dart';
-import 'package:socialix_flutter_nodejs/features/auth/data/models/user_model.dart';
+import 'package:socialix_flutter_nodejs/features/user/data/models/user_model.dart';
 import 'package:socialix_flutter_nodejs/injection/service_locator.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
@@ -29,14 +29,15 @@ class AuthService {
   }
 
   Future<void> _refreshAccesToken() async {
+    final secureStorage = sl<FlutterSecureStorage>();
     if (_refreshToken == null) throw Exception('Invalid refresh Token');
     final res = await dio.post(
       '${EndpointsConstants.baseUrl}/auth/refresh-token',
       data: {'refreshToken': _refreshToken},
     );
     final accessToken = res.data['data']['accessToken'];
-    final refreshToken = res.data['data']['refreshToken'];
-    await saveTokens(accessToken, refreshToken);
+    await secureStorage.write(key: StorageKeys.accessToken, value: accessToken);
+    _accessToken = accessToken;
   }
 
   Future<void> _loadUserFromStorage() async {

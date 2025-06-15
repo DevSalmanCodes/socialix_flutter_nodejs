@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:socialix_flutter_nodejs/core/constants/app_constants.dart';
 import 'package:socialix_flutter_nodejs/core/errors/exceptions.dart';
 import 'package:socialix_flutter_nodejs/core/utils/show_toast.dart';
 import 'package:socialix_flutter_nodejs/features/post/domain/entities/post_entity.dart';

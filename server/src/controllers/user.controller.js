@@ -1,26 +1,74 @@
 import User from "../models/user.model.js";
+import mongoose from "mongoose";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResonse.js";
-import {uploadOnCloudinary} from "../utils/cloudinary.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 class UserController {
-  static async getCurrentUser(req, res) {
-    try {
-      const user = await User.findById(req.user._id).select(
-        "-password -refreshToken"
-      );
-      if (!user) {
-        return res.status(404).json(new ApiError(404, "User not found"));
-      }
+  static async getUserDetails(req, res) {
+    const { userId } = req.params;
 
-      res
-        .status(200)
-        .json(new ApiResponse(200, "User fetched successfully", user));
+    try {
+      const userDetails = await User.aggregate([
+        {
+          $match: {
+            _id: new mongoose.Types.ObjectId(userId)
+          }
+        },
+        {
+          $addFields: {
+            avatar: "$avatar.url"
+           }
+        },
+        {
+          $lookup: {
+            from: "follows",
+            localField: "_id",
+            foreignField: "followId", // who follows me
+            as: "followerRefs"
+          }
+        },
+        {
+          $lookup: {
+            from: "follows",
+            localField: "_id",
+            foreignField: "followerId", // who I follow
+            as: "followingRefs"
+          }
+        },
+        {
+          $project: {
+            _id: 1,
+            username: 1,
+            email: 1,
+            avatar: 1,
+            bio:1,
+            coverImage: 1,
+            followers: {
+              $map: {
+                input: "$followerRefs",
+                as: "f",
+                in: "$$f.followerId"
+              }
+            },
+            followings: {
+              $map: {
+                input: "$followingRefs",
+                as: "f",
+                in: "$$f.followId"
+              }
+            }
+          }
+        }
+      ]);
+      console.log(userDetails);
+
+      return res.status(200).json(new ApiResponse(200, "User fetched successfully", userDetails[0]));
     } catch (err) {
-      return res
-        .status(500)
-        .json(new ApiError(500, err?.message || "Internal server error"));
+      console.error("Error:", err);
+      return res.status(500).json({ message: "Failed to fetch user details", error: err.message });
     }
   }
+
 
   static async updateUserProfile(req, res) {
     const { username, email, bio } = req.body;
@@ -77,7 +125,7 @@ class UserController {
   static async uploadProfilePic(req, res) {
     const { email } = req.body;
     const file = req.file;
-    console.log(email); 
+    console.log(email);
 
     if (!file || !email) {
       return res.status(400).json(new ApiError(400, "Profile picture and email are required"));

@@ -165,10 +165,6 @@ class AuthController {
         return res.status(401).json(new ApiError(401, "Token expired or used"));
       }
       const accessToken = user.generateAccessToken(user?._id);
-      const refreshToken = user.generateRefreshToken(user?._id);
-      user.refreshToken = refreshToken;
-      console.log(user?.refreshToken === incomingRefreshToken);
-      
       await user.save();
       const options = {
         httpOnly: true,
@@ -177,11 +173,9 @@ class AuthController {
       return res
         .status(200)
         .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", refreshToken, options)
         .json(
           new ApiResponse(200, "Token refreshed", {
             accessToken: accessToken,
-            refreshToken: refreshToken,
           })
         );
     } catch (err) {

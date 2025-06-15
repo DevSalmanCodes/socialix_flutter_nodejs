@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:socialix_flutter_nodejs/core/errors/exceptions.dart';
 import 'package:socialix_flutter_nodejs/core/errors/failures.dart';
-import 'package:socialix_flutter_nodejs/features/auth/domain/entities/user_entity.dart';
+import 'package:socialix_flutter_nodejs/features/user/domain/entities/user_entity.dart';
 import 'package:socialix_flutter_nodejs/features/auth/domain/repositories/auth_repository.dart';
 
 class SignUpUser {

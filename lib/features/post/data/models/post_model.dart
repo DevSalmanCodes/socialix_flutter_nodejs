@@ -1,4 +1,4 @@
-import 'package:socialix_flutter_nodejs/features/auth/data/models/user_model.dart';
+import 'package:socialix_flutter_nodejs/features/user/data/models/user_model.dart';
 import 'package:socialix_flutter_nodejs/features/post/data/models/comment_model.dart';
 import 'package:socialix_flutter_nodejs/features/post/data/models/like_model.dart';
 import 'package:socialix_flutter_nodejs/features/post/domain/entities/post_entity.dart';

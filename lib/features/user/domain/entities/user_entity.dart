@@ -7,6 +7,8 @@ class UserEntity {
   final String coverImage;
   final String? accessToken;
   final String? refreshToken;
+  final List<String>? followers;
+  final List<String>? followings;
   UserEntity({
     required this.id,
     required this.username,
@@ -16,5 +18,7 @@ class UserEntity {
     required this.coverImage,
     required this.accessToken,
     required this.refreshToken,
+    required this.followers,
+    required this.followings
   });
 }

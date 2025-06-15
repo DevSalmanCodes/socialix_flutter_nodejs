@@ -5,10 +5,10 @@ import 'package:socialix_flutter_nodejs/features/post/data/models/post_model.dar
 abstract class IPostRemoteDataSource {
   Future<List<PostModel>> getPosts(String token);
   Future<PostModel> getPostById(int id);
-  Future<PostModel> createPost(String content, String imagePath, String token);
+  Future<PostModel> createPost(String content, String imagePath);
   Future<PostModel> updatePost();
   Future<void> deletePost(String postId, String token);
-  Future<void> toggleLike(String postId, String token);
+  Future<void> toggleLike(String postId);
 }
 
 class PostRemoteDataSource implements IPostRemoteDataSource {
@@ -21,7 +21,6 @@ class PostRemoteDataSource implements IPostRemoteDataSource {
   Future<PostModel> createPost(
     String content,
     String imagePath,
-    String token,
   ) async {
     final rawData = {'content': content};
     FormData formData = FormData();
@@ -34,9 +33,11 @@ class PostRemoteDataSource implements IPostRemoteDataSource {
         ),
       });
     }
-
+    await authService.ensureTokenIsValid();
     final res = await dio.post(
-      options: Options(headers: {'Authorization': 'Bearer $token'}),
+      options: Options(
+        headers: {'Authorization': 'Bearer ${authService.accessToken}'},
+      ),
       '$baseUrl/create',
       data: imagePath != '' ? formData : rawData,
     );
@@ -45,9 +46,12 @@ class PostRemoteDataSource implements IPostRemoteDataSource {
 
   @override
   Future<void> deletePost(String postId, String token) async {
+    await authService.ensureTokenIsValid();
     await dio.delete(
       '$baseUrl/$postId/delete',
-      options: Options(headers: {'Authorization': 'Bearer $token'}),
+      options: Options(
+        headers: {'Authorization': 'Bearer ${authService.accessToken}'},
+      ),
     );
   }
 
@@ -75,9 +79,9 @@ class PostRemoteDataSource implements IPostRemoteDataSource {
   }
 
   @override
-  Future<void> toggleLike(String postId, String token) async {
+  Future<void> toggleLike(String postId) async {
     await authService.ensureTokenIsValid();
-    final res = await dio.put(
+    await dio.put(
       '$baseUrl/$postId/toggle-like',
       options: Options(
         headers: {'Authorization': 'Bearer ${authService.accessToken}'},

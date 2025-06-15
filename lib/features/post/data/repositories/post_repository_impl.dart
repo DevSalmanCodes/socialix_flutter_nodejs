@@ -19,7 +19,6 @@ class PostRepositoryImpl extends IPostRepository {
       return await remoteDataSource.createPost(
         content,
         imagePath,
-        authService.currentUser!.accessToken!,
       );
     } on DioException catch (e) {
       _clearUserIfTokenExpired(e);
@@ -32,12 +31,8 @@ class PostRepositoryImpl extends IPostRepository {
   @override
   Future<void> deletePost(String postId) async {
     try {
-      await remoteDataSource.deletePost(
-        postId,
-        authService.currentUser!.accessToken!,
-      );
+      await remoteDataSource.deletePost(postId, authService.accessToken!);
     } on DioException catch (e) {
-      _clearUserIfTokenExpired(e);
       throw ServerException(e.response?.data['message'] ?? 'Unexpected Error');
     } catch (e) {
       throw ServerException(e.toString());
@@ -54,6 +49,7 @@ class PostRepositoryImpl extends IPostRepository {
     try {
       return await remoteDataSource.getPosts(authService.accessToken!);
     } on DioException catch (e) {
+      _clearUserIfTokenExpired(e);
       throw ServerException(e.response?.data['message'] ?? 'Unexpected Error');
     } catch (e) {
       throw ServerException(e.toString());
@@ -63,10 +59,7 @@ class PostRepositoryImpl extends IPostRepository {
   @override
   Future<void> toggleLike(String postId) async {
     try {
-      return await remoteDataSource.toggleLike(
-        postId,
-        authService.accessToken!,
-      );
+      return await remoteDataSource.toggleLike(postId);
     } on DioException catch (e) {
       _clearUserIfTokenExpired(e);
       throw ServerException(e.response?.data['message'] ?? 'Unexpected Error');

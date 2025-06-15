@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:socialix_flutter_nodejs/core/constants/endpoints_constants.dart';
-import 'package:socialix_flutter_nodejs/features/auth/data/models/user_model.dart';
+import 'package:socialix_flutter_nodejs/features/user/data/models/user_model.dart';
 
 abstract class IAuthRemoteDataSource {
   Future<UserModel> singUpUser(
@@ -54,6 +54,7 @@ class AuthRemoteDataSourceImpl implements IAuthRemoteDataSource {
       '${EndpointsConstants.baseUrl}/auth/login',
       data: {'email': email, 'password': password},
     );
+    print(res.data);
     return UserModel.fromJson(res.data['data']);
   }
 

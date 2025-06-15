@@ -1,4 +1,4 @@
-import 'package:socialix_flutter_nodejs/features/auth/domain/entities/user_entity.dart';
+import 'package:socialix_flutter_nodejs/features/user/domain/entities/user_entity.dart';
 
 class UserModel extends UserEntity {
   UserModel({
@@ -10,6 +10,8 @@ class UserModel extends UserEntity {
     required super.coverImage,
     required super.accessToken,
     required super.refreshToken,
+    required super.followers,
+    required super.followings,
   });
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
@@ -21,6 +23,18 @@ class UserModel extends UserEntity {
       coverImage: json['coverImage'] as String,
       accessToken: json['accessToken'] as String?,
       refreshToken: json['refreshToken'] as String?,
+      followers:
+          json['followers'] != null
+              ? (json['followers'] as List<dynamic>)
+                  .map((e) => e as String)
+                  .toList()
+              : [],
+      followings:
+          json['followings'] != null
+              ? (json['followings'] as List<dynamic>)
+                  .map((e) => e as String)
+                  .toList()
+              : [],
     );
   }
   Map<String, dynamic> toJson() {

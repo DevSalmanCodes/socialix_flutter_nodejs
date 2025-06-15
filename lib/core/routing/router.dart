@@ -4,6 +4,7 @@ import 'package:socialix_flutter_nodejs/features/auth/presentation/screens/sign_
 import 'package:socialix_flutter_nodejs/features/auth/presentation/splash_screen.dart';
 import 'package:socialix_flutter_nodejs/features/post/presentation/screens/feed_screen.dart';
 import 'package:socialix_flutter_nodejs/features/post/presentation/screens/upload_post_screen.dart';
+import 'package:socialix_flutter_nodejs/features/user/presentation/screens/profile_screen.dart';
 
 final GoRouter router = GoRouter(
   routes: [
@@ -14,6 +15,13 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/uploadPost',
       builder: (context, state) => UploadPostScreen(),
+    ),
+    GoRoute(
+      path: '/profile/:userId',
+      builder: (context, state) {
+        final userId = state.pathParameters['userId'];
+        return ProfileScreen(userId: userId ?? '');
+      },
     ),
   ],
 );

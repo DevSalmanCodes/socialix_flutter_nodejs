@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialix_flutter_nodejs/core/routing/router.dart';
 import 'package:socialix_flutter_nodejs/core/services/auth_service.dart';
+import 'package:socialix_flutter_nodejs/core/services/internet_connection_checker_service.dart';
 import 'package:socialix_flutter_nodejs/core/theme/app_theme.dart';
 import 'package:socialix_flutter_nodejs/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:socialix_flutter_nodejs/features/auth/domain/usecases/login_user.dart';
@@ -15,12 +16,16 @@ import 'package:socialix_flutter_nodejs/features/post/domain/usecases/get_posts.
 import 'package:socialix_flutter_nodejs/features/post/domain/usecases/toggle_like.dart';
 import 'package:socialix_flutter_nodejs/features/post/presentation/blocs/post_bloc.dart';
 import 'package:socialix_flutter_nodejs/features/post/presentation/cubits/create_post_cubit.dart';
+import 'package:socialix_flutter_nodejs/features/user/data/repositories/user_repository_impl.dart';
+import 'package:socialix_flutter_nodejs/features/user/domain/usecases/get_current_user_details.dart';
+import 'package:socialix_flutter_nodejs/features/user/presentation/blocs/user_bloc.dart';
 import 'package:socialix_flutter_nodejs/injection/service_locator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initDependencies();
   await sl<AuthService>().init();
+  sl<InternetConnectionCheckerService>().init();
   final AuthRepositoryImpl authRepositoryImpl = sl<AuthRepositoryImpl>();
   final PostRepositoryImpl postRepositoryImpl = sl<PostRepositoryImpl>();
   runApp(
@@ -32,6 +37,9 @@ void main() async {
       getPosts: GetPosts(postRepository: postRepositoryImpl),
       toggleLike: ToggleLike(postRepository: postRepositoryImpl),
       deletePost: DeletePost(postRepository: postRepositoryImpl),
+      getCurrentUserDetails: GetUserDetails(
+        userRepository: sl<UserRepositoryImpl>(),
+      ),
     ),
   );
 }
@@ -44,6 +52,7 @@ class MyApp extends StatelessWidget {
   final GetPosts getPosts;
   final ToggleLike toggleLike;
   final DeletePost deletePost;
+  final GetUserDetails getCurrentUserDetails;
   const MyApp({
     super.key,
     required this.signUpUser,
@@ -53,6 +62,7 @@ class MyApp extends StatelessWidget {
     required this.getPosts,
     required this.toggleLike,
     required this.deletePost,
+    required this.getCurrentUserDetails,
   });
 
   @override
@@ -78,6 +88,11 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => CreatePostCubit(createPostUseCase: createPost),
+        ),
+        BlocProvider(
+          create:
+              (context) =>
+                  UserBloc(getCurrentUserDetails: getCurrentUserDetails),
         ),
       ],
 

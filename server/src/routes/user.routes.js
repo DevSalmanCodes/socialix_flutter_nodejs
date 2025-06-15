@@ -5,8 +5,8 @@ import upload from "../middlewares/multer.middleware.js";
 const router = express.Router();
 
 router
-  .route("/get-current-user")
-  .get(isAuthrorizedUser, UserController.getCurrentUser);
+  .route("/:userId/get-user")
+  .get(isAuthrorizedUser, UserController.getUserDetails);
 router
   .route("/update-profile")
   .put(isAuthrorizedUser, UserController.updateUserProfile);
@@ -15,6 +15,6 @@ router
   .route("/change-password")
   .patch(isAuthrorizedUser, UserController.changePassword);
 
-  router.route("/upload-profile-pic").post(upload.single("image"),UserController.uploadProfilePic)
+router.route("/upload-profile-pic").post(upload.single("image"), UserController.uploadProfilePic)
 
-  export default router;
+export default router;

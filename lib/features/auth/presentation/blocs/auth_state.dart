@@ -1,4 +1,4 @@
-import 'package:socialix_flutter_nodejs/features/auth/domain/entities/user_entity.dart';
+import 'package:socialix_flutter_nodejs/features/user/domain/entities/user_entity.dart';
 
 abstract class AuthState {}
 

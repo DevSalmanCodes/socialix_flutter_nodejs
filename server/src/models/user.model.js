@@ -38,6 +38,14 @@ const userSchema = new mongoose.Schema({
   accessToken:{
     type:String,
     default:null
+  },
+  followings:{
+    type:mongoose.Types.ObjectId,
+    ref:"Follow"
+  },
+  followers:{
+    type:mongoose.Types.ObjectId,
+    ref:"Follow"
   }
 });
 

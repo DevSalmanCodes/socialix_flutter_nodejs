@@ -17,4 +17,5 @@ router
 
 router.route("/upload-profile-pic").post(upload.single("image"), UserController.uploadProfilePic)
 
+router.route("/toggle-follow").post(UserController.toggleFollow);
 export default router;

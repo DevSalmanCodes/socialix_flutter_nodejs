@@ -1,7 +1,7 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialix_flutter_nodejs/core/services/auth_service.dart';
-import 'package:socialix_flutter_nodejs/core/services/internet_connection_checker_service.dart';
 import 'package:socialix_flutter_nodejs/features/user/domain/entities/user_entity.dart';
 import 'package:socialix_flutter_nodejs/features/user/presentation/blocs/user_bloc.dart';
 import 'package:socialix_flutter_nodejs/features/user/presentation/blocs/user_event.dart';
@@ -17,14 +17,15 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+
   @override
   void initState() {
     super.initState();
+    
     if (mounted) {
       context.read<UserBloc>().add(GetUserDetailsEvent(widget.userId));
     }
   }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -47,8 +48,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               );
             } else if (state is UserSuccessState) {
               return _buildProfileContent(state.userEntity, theme, textTheme);
-            } else if (!InternetConnectionCheckerService.isConnected) {
-              return Center(child: Text('No internet connection'));
             } else {
               return Center(child: Text('Something went wrong'));
             }
@@ -67,7 +66,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       // Avatar
       CircleAvatar(
         radius: 50,
-        backgroundImage: NetworkImage(user.avatar.toString()),
+        backgroundImage:
+            user.avatar != ''
+                ? NetworkImage(user.avatar!)
+                : AssetImage('assets/profile.jpng'),
       ),
       const SizedBox(height: 16),
       Text(

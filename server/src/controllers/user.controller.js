@@ -1,5 +1,6 @@
 import User from "../models/user.model.js";
 import mongoose from "mongoose";
+import Follow from "../models/follow.model.js"
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResonse.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
@@ -17,7 +18,7 @@ class UserController {
         {
           $addFields: {
             avatar: "$avatar.url"
-           }
+          }
         },
         {
           $lookup: {
@@ -31,7 +32,7 @@ class UserController {
           $lookup: {
             from: "follows",
             localField: "_id",
-            foreignField: "followerId", // who I follow
+            foreignField: "followerId",
             as: "followingRefs"
           }
         },
@@ -41,7 +42,7 @@ class UserController {
             username: 1,
             email: 1,
             avatar: 1,
-            bio:1,
+            bio: 1,
             coverImage: 1,
             followers: {
               $map: {
@@ -137,6 +138,24 @@ class UserController {
       }
 
       const uploadResult = await uploadOnCloudinary(file)
+    } catch (err) {
+      return res.status(500).json(new ApiError(500, err?.message || "Internal server error"));
+    }
+  }
+  static async toggleFollow(req, res) {
+    const { followId, followerId } = req.query;
+    try {
+      if (!followId || !followId) {
+        return res.status(400).json(new ApiError(400, "Follow id and follower id is required"));
+      }
+      const isFollowed = await Follow.findOne({ followId: followId, followerId: followerId });
+      if (isFollowed) {
+        await isFollowed.deleteOne();
+        return res.status(201).json(new ApiResponse(201, "User unfollowed successfully"));
+      } else {
+        await Follow.create({ followId: followId, followerId: followerId });
+      }
+      return res.status(201).json(new ApiResponse(201, "User followed successfully"));
     } catch (err) {
       return res.status(500).json(new ApiError(500, err?.message || "Internal server error"));
     }

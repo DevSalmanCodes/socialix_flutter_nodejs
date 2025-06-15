@@ -67,9 +67,6 @@ class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     final authService = sl<AuthService>();
-    if (authService.currentUser == null) {
-      return SizedBox();
-    }
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
@@ -86,11 +83,10 @@ class _PostCardState extends State<PostCard> {
               child: CircleAvatar(
                 radius: 24,
                 backgroundColor: widget.theme.primaryColor.withOpacity(0.2),
-                backgroundImage: NetworkImage(
-                  widget.post.postedBy.avatar != ''
-                      ? widget.post.postedBy.avatar!
-                      : 'https://img.freepik.com/premium-vector/profile-picture-placeholder-avatar-silhouette-gray-tones-icon-colored-shapes-gradient_1076610-40164.jpg',
-                ),
+                backgroundImage:
+                    widget.post.postedBy.avatar != ''
+                        ? NetworkImage(widget.post.postedBy.avatar!)
+                        : AssetImage('assets/profile.png'),
               ),
             ),
             title: Text(
